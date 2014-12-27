@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<color name="bg_fragment">#e9ffe9</color>
+    <color name="bg">#4400FF00</color>
+    <color name="bg_scroll">#AAFFFFFF</color>
+    <color name="bg_sub_titles">#4480B2FF</color>
+    <color name="bg_sub_titles_line">#440000FF</color>
+    <color name="bg_popup">#77FF77</color>
+        <color name="bg_popup_more_transparent">#bb11aa11</color>
+    <color name="progress">#1E88E5</color>
+    <color name="luncher_text">#5555ff</color>
+    <color name="minus_btn_color">#44ff0000</color>
+    
+        <color name="flat_button_color">#3172E2</color>
+    
+</resources>

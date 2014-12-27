@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:ptr="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/wrap_date_and_clear"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/progressBarIndeterminate"
+    android:layout_margin="2dp"
+    android:orientation="horizontal" >
+
+    <RelativeLayout
+        android:id="@+id/buttonDateChange_warper"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_weight="0.5" >
+
+        <com.gc.materialdesign.views.ButtonFlat
+            android:id="@+id/buttonDateChange"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/flat_button_color"
+            android:gravity="right|top"
+            android:text="jbdf fdjfbd\n dnnsjfnsd" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="2dp"
+            android:src="@drawable/ic_action_event" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/buttonClear_warper"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_weight="0.5" >
+
+        <com.gc.materialdesign.views.ButtonFlat
+            android:id="@+id/buttonClear"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/flat_button_color"
+            android:gravity="right|top"
+            android:text="@string/clear_data" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="2dp"
+            android:src="@android:drawable/ic_menu_delete" />
+    </RelativeLayout>
+
+</LinearLayout>

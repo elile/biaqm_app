@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal" >
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.125"
+            android:background="@color/bg_sub_titles" >
+
+            <Button
+                android:id="@+id/btn_more"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:background="@drawable/more_selector_btn"
+                android:text="" />
+
+            <ImageView
+                android:id="@+id/imageView_vi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="2dp"
+                android:layout_marginTop="2dp"
+                android:src="@drawable/vi"
+                android:visibility="invisible" />
+        </RelativeLayout>
+
+        <FrameLayout
+            android:id="@+id/btn_contain"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.125"
+            android:background="@color/minus_btn_color" >
+
+            <Button
+                android:id="@+id/btn_remove"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@drawable/minus_selector_btn"
+                android:text="" />
+        </FrameLayout>
+
+        <EditText
+            android:id="@+id/editText_hour"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.150"
+            android:ems="10"
+            android:gravity="center"
+            android:inputType="numberDecimal"
+            android:maxLength="10" >
+        </EditText>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.375" >
+
+            <Spinner
+                android:id="@+id/spinner_in_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/btn_dropdown"
+                android:prompt="@string/select" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="8dp"
+                android:src="@drawable/green_triangle_60" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/text_spinner_list"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.225"
+            android:gravity="center"
+            android:text="dummy"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+    </LinearLayout>
+
+</RelativeLayout>

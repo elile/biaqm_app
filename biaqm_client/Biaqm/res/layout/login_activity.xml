@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/bg_9"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="@color/bg_popup_more_transparent" >
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="16dp"
+            android:layout_marginRight="16dp"
+            android:text="@string/enter"
+            android:textColor="@android:color/primary_text_dark"
+            android:textSize="35sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <com.gc.materialdesign.views.ProgressBarIndeterminate
+        android:id="@+id/progressBarIndeterminate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        android:background="@color/progress" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal"
+        android:padding="8dp" >
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="3dp"
+            android:text="@string/remember_me"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <com.gc.materialdesign.views.CheckBox
+            android:id="@+id/checkBoxUserName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/textView1"
+            android:gravity="top" />
+
+        <EditText
+            android:id="@+id/editTextUserName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="3dp"
+            android:layout_toRightOf="@id/checkBoxUserName"
+            android:ellipsize="start"
+            android:ems="10"
+            android:gravity="center"
+            android:hint="@string/enter_username"
+            android:maxLength="100"
+            android:soundEffectsEnabled="true" >
+
+            <requestFocus />
+        </EditText>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:padding="8dp" >
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="3dp"
+            android:text="@string/remember_me"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <com.gc.materialdesign.views.CheckBox
+            android:id="@+id/checkBoxPassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/textView2"
+            android:gravity="top" />
+
+        <EditText
+            android:id="@+id/editTextPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="3dp"
+            android:layout_toRightOf="@id/checkBoxPassword"
+            android:ellipsize="start"
+            android:ems="10"
+            android:gravity="center"
+            android:hint="@string/enter_password_withoudots"
+            android:inputType="textPassword"
+            android:maxLength="100"
+            android:soundEffectsEnabled="true" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/textViewWrongPasswordOrUserName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        android:text="@string/no_correct_username_or_password"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#ff0000"
+        android:visibility="invisible" />
+
+    <com.gc.materialdesign.views.ButtonRectangle
+        android:id="@+id/buttonEnter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="20dp"
+        android:background="@color/bg_popup"
+        android:drawableLeft="@drawable/ic_action_user"
+        android:soundEffectsEnabled="true"
+        android:text="@string/enter"
+        android:textSize="16sp"
+        tools:rippleSpeed="20" />
+
+</LinearLayout>

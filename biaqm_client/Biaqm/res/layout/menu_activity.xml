@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_11"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="@color/bg_popup_more_transparent" >
+
+        <TextView
+            android:id="@+id/textView_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="16dp"
+            android:layout_marginRight="16dp"
+            android:text="@string/menu"
+            android:textColor="@android:color/primary_text_dark"
+            android:textSize="32sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <com.gc.materialdesign.views.ProgressBarIndeterminate
+        android:id="@+id/progressBarIndeterminate"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/progress"
+        android:visibility="invisible" />
+
+    <RelativeLayout
+        android:id="@+id/write_warper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="16dp" >
+
+        <com.gc.materialdesign.views.ButtonRectangle
+            android:id="@+id/buttonActionWrite"
+            android:layout_width="match_parent"
+            android:layout_height="68dp"
+            android:background="@color/bg_popup"
+            android:drawableLeft="@android:drawable/ic_menu_edit"
+            android:soundEffectsEnabled="true"
+            android:text="@string/action_write"
+            android:textSize="16sp"
+            tools:rippleSpeed="20" />
+
+        <ImageView
+            android:id="@+id/ImageView_write_selecred"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/blue_dot" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/plan_warper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="16dp" >
+
+        <com.gc.materialdesign.views.ButtonRectangle
+            android:id="@+id/buttonActionPreperd"
+            android:layout_width="match_parent"
+            android:layout_height="68dp"
+            android:background="@color/bg_popup"
+            android:drawableLeft="@android:drawable/ic_menu_manage"
+            android:soundEffectsEnabled="true"
+            android:text="@string/action_preperd"
+            android:textSize="16sp"
+            tools:rippleSpeed="20" />
+
+        <ImageView
+            android:id="@+id/ImageView_plan_selecred"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/blue_dot"
+            android:visibility="gone"
+             />
+
+    </RelativeLayout>
+
+</LinearLayout>
