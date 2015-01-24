@@ -2,7 +2,7 @@ package model;
 
 import java.util.Date;
 
-public class Block {
+public class Block  extends BaseSpinnerModel  {
 	
 	public int ID ;
     public Date InsertDate ;
@@ -77,11 +77,8 @@ public class Block {
 	}
 	@Override
 	public String toString() {
-		return "Block [ID=" + ID + ", InsertDate=" + InsertDate
-				+ ", InsertUser=" + InsertUser + ", LastUpdate=" + LastUpdate
-				+ ", LastUpdateUser=" + LastUpdateUser + ", NameEng=" + NameEng
-				+ ", NameHe=" + NameHe + ", RegionID=" + RegionID + ", FarmID="
-				+ FarmID + ", Remarks=" + Remarks + "]";
+		return NameHe;
+
 	}
 	public Block(int iD, Date insertDate, int insertUser, Date lastUpdate,
 			int lastUpdateUser, String nameEng, String nameHe, int regionID,
@@ -97,6 +94,17 @@ public class Block {
 		RegionID = regionID;
 		FarmID = farmID;
 		Remarks = remarks;
+	}
+	@Override
+	public long getIdBase() {
+		// TODO Auto-generated method stub
+		return ID;
+	}
+	@Override
+	public String getSpinnerName() {
+		// TODO Auto-generated method stub
+		return NameHe;
+
 	}
     
     

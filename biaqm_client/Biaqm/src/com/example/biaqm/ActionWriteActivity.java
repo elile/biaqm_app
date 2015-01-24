@@ -16,6 +16,7 @@ import model.ActivityGroups;
 import model.ActivityType;
 import model.Block;
 import model.Crop;
+import model.Farm;
 import model.InsertActivityFromPost;
 import model.MachineAdvanceResult;
 import model.MachineToInsert;
@@ -44,6 +45,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewCompat;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -75,6 +77,9 @@ import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
 import com.nineoldandroids.view.ViewPropertyAnimator;
 import com.slidinglayer.SlidingLayer;
 
+import design_patterns.mediator.ColegaSpinner;
+import design_patterns.mediator.MediatorImplement;
+
 @SuppressLint("SimpleDateFormat")
 public class ActionWriteActivity extends FragmentActivity  
 implements OnClickListener, OnRefreshListener<ScrollView>
@@ -84,11 +89,11 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 	private static final int MACHINE = 2;
 
 	private LinearLayout wraper_adding_machinery, wraper_adding_worker;
-	private boolean isBuildScreenFinish, isBuildWorkersFinish, isBuildmotoring_machinerysFinish, isInRefreshProcess;
-	private int prev_select_spinner_activity_group;
+	//	private boolean isBuildFarmFinish/*, isBuildScreenFinish*/, isBuildWorkersFinish, isBuildmotoring_machinerysFinish, isInRefreshProcess;
 	private Spinner spinnerThatLunchFrom;
 	private EditText editTextThatLunchFrom;
 	private ImageView imgViewViThatLunchFrom;
+	private Button buttonNoreThatLunchFrom;
 
 	private User currentConnectedUser;
 
@@ -101,6 +106,7 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 	private String UrlGetWorker;
 	private String UrlGetMachinery;
 	private String UrlGetActivityGroups;
+	private String UrlGetFarms;
 
 	private Spinner spinner_activity_type, spinner_block, spinner_plot, 
 	spinner_crop, spinner_variety, spinner_worker, 
@@ -124,6 +130,7 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 	private Variety[] Varietys;
 	private Worker[] Workers; 
 	private motoring_machinery[] motoring_machinerys;
+	private Farm[] farms;
 	//	private Trailing_machine[] Trailing_machines;
 
 	private SimpleDateFormat sdf;
@@ -134,10 +141,10 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 	private ProgressDialog progressDialog;
 	private PullToRefreshScrollView pullToRefreshView;
 
-	private int prev_select_spinner_activity_type, 
-	prev_select_spinner_block,	/*prev_select_spinner_Trailing_machine,*/ 
-	prev_select_spinner_motoring_machinery,	prev_select_spinner_crop,
-	prev_select_spinner_variety,prev_select_spinner_worker,prev_select_spinner_plot;
+	//	private int prev_select_spinner_activity_type, prev_select_spinner_activity_group,
+	//	prev_select_spinner_block,	/*prev_select_spinner_Trailing_machine,*/ 
+	//	prev_select_spinner_motoring_machinery,	prev_select_spinner_crop,
+	//	prev_select_spinner_variety,prev_select_spinner_worker,prev_select_spinner_plot, prev_select_spinner_farm;
 	private Button btn_more_worker, btn_add_worker, btn_more_motoring, btn_add_motoring;
 
 	private ArrayList<View> extraAddWorkers;
@@ -156,6 +163,15 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 	private ProgressBarIndeterminate progressBarIndeterminate;
 	private SlidingLayer mSlidingLayer;
 	private ImageButton close_open_menu;
+	private MediatorImplement mediator;
+	private ColegaSpinner colActivity;
+	private ColegaSpinner colActivityGroup;
+	private LinearLayout wraper_sector;
+	private Spinner spinner_sector;
+	private ColegaSpinner colBlock;
+	private ColegaSpinner colPlot;
+	private ColegaSpinner colFarm;
+
 
 
 	@Override
@@ -175,7 +191,10 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 		String extra = i.getStringExtra("inWrite");
 		inWrite = extra.compareTo("1")==0;
 
+		currentConnectedUser = (User) StoreObjects.getFromPreferences(User.class, DataGlobal.CURRENT_USER, this);
+
 		init();
+		initMediator();
 		// the new factory method of getting data from web
 		//				new AsyncGetFrom("url").with(this).setMethod(Method.POST).setObjectToPost(new Object()).setTypeOfResponse(Block[].class).doOnResponse(new OnResponse()
 		//				{
@@ -185,10 +204,111 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 		//						
 		//					}
 		//				}).execute();
+		new BuildFarmsFromWeb().execute();
 
-		new BuildScreenFromWeb().execute(); //ActivityGroups , ActivityTypes, plots, blocks, Crops
-		new BuildWorkersFromWeb().execute();
-		new Buildmotoring_machinerysFromWeb().execute();
+	}
+
+	private void buildUrlForFarmsGet() 
+	{
+		UrlGetFarms = host + DataGlobal.UrlGetFarms;
+		UrlGetFarms = String.format(UrlGetFarms, currentConnectedUser.getCompany_id()+"");
+	}
+
+	public class BuildFarmsFromWeb extends AsyncTask<String, Integer, User>
+	{
+		@Override
+		protected void onPreExecute() 
+		{
+			setProgressBarIndeterminate(View.VISIBLE); 
+			setProgressBarIndeterminateVisibility(true); 
+			buildUrlForFarmsGet();
+			super.onPreExecute();
+		}
+
+		@Override
+		protected User doInBackground(String... params) 
+		{
+			farms = Crud.GET(UrlGetFarms, Farm[].class, 1);
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(User result) 
+		{
+			setProgressBarIndeterminate(View.INVISIBLE); 
+			setProgressBarIndeterminateVisibility(false);
+
+			colFarm.setArray(farms);
+			buildAdapterToFarms();
+			if (farms.length == 1)
+			{
+				spinner_sector.setSelection(1);
+				wraper_sector.setVisibility(View.GONE);
+			}
+			//			isBuildFarmFinish = true;
+			//			if (isBuildWorkersFinish && isBuildmotoring_machinerysFinish && isBuildScreenFinish) 
+			//			{
+			//				pullToRefreshView.onRefreshComplete();
+			//				isInRefreshProcess = false;
+			//				prevSpinnersSelectionRestoreInstance();
+			//			}
+			super.onPostExecute(result);
+		}
+
+
+	}
+
+	private void buildAdapterToFarms()
+	{
+		spinner_sector.setOnItemSelectedListener(new OnItemSelectedListener() 
+		{
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) 
+			{
+				clearSpinnersAndExtra();
+				spinner_ActivityGroups.setAdapter(null);
+				spinner_activity_type.setAdapter(null);
+				spinner_block.setAdapter(null);
+				spinner_plot.setAdapter(null);
+				spinner_crop.setAdapter(null);
+				spinner_variety.setAdapter(null);
+				spinner_worker.setAdapter(null);
+				spinner_motoring_machinery.setAdapter(null);
+				if (position > 0)
+				{
+					Farm f = farms[position-1];
+					currentConnectedUser.setFarm_id(f.getId());
+					StoreObjects.putInSharedPreferences(currentConnectedUser, DataGlobal.CURRENT_USER, ActionWriteActivity.this);
+
+					new BuildScreenFromWeb().execute(); //ActivityGroups , ActivityTypes, plots, blocks, Crops
+					new BuildWorkersFromWeb().execute();
+					new Buildmotoring_machinerysFromWeb().execute();
+				}
+				
+			}
+			@Override
+			public void onNothingSelected(AdapterView<?> parent)
+			{
+			}
+		});
+	}
+
+	private void initMediator() 
+	{
+		mediator = new MediatorImplement();
+
+		colActivity = new ColegaSpinner(mediator, DataGlobal.SPINNER_ACTIVITY_NAME, spinner_activity_type,this);
+		colActivityGroup = new ColegaSpinner(mediator, DataGlobal.SPINNER_ACTIVITY_GROUP_NAME, spinner_ActivityGroups, this);	
+		colBlock = new ColegaSpinner(mediator, DataGlobal.SPINNER_BLOCK_NAME, spinner_block, this);	
+		colPlot = new ColegaSpinner(mediator, DataGlobal.SPINNER_PLOT_NAME, spinner_plot, this);	
+		colFarm = new ColegaSpinner(mediator, DataGlobal.SPINNER_FARM_NAME, spinner_sector, this);
+
+
+		mediator.addColleague(colActivity);
+		mediator.addColleague(colActivityGroup);
+		mediator.addColleague(colBlock);
+		mediator.addColleague(colPlot);
+		mediator.addColleague(colFarm);
 	}
 
 	private void initSlidingMenu() 
@@ -243,6 +363,8 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 		extraAddWorkers = new ArrayList<View>();
 		extraAddMachines = new ArrayList<View>();
 
+		wraper_sector = (LinearLayout)findViewById(R.id.wraper_sector);
+		spinner_sector = (Spinner)findViewById(R.id.spinner_sector);
 		main_warper = (RelativeLayout)findViewById(R.id.main_warper);
 
 		imageView_motoring_vi = (ImageView)findViewById(R.id.imageView_motoring_vi);
@@ -372,9 +494,9 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 			insertCheck();
 
 			break;
-//		case R.id.button_main_menu:
-//			startActivity(new Intent(this, MenuActivity.class));
-//			break;
+			//		case R.id.button_main_menu:
+			//			startActivity(new Intent(this, MenuActivity.class));
+			//			break;
 		case R.id.buttonClear:
 			clearSpinnersAndExtra();
 			break;
@@ -392,32 +514,32 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 		UniversalFunctions.setSelectionSpinner(spinner_variety, 0);
 		UniversalFunctions.setSelectionSpinner(spinner_worker, 0);
 		UniversalFunctions.setSelectionSpinner(spinner_motoring_machinery, 0);
-		
+
 		extraAddWorkers.clear();
 		extraAddMachines.clear();
 		wraper_adding_machinery.removeAllViews();
 		wraper_adding_worker.removeAllViews();
-		
+
 		editTextRemark.setText("");
-		
+
 		btn_more_worker.setTag(null);
 		btn_more_motoring.setTag(null);
-		
+
 		// back to today?
 		Calendar c = Calendar.getInstance();
 		mYear = c.get(Calendar.YEAR);
 		mMonth = c.get(Calendar.MONTH);
 		mDay = c.get(Calendar.DAY_OF_MONTH);
 		buttonDateChange.setText(getString(R.string.change_date)+"\n"+mDay+"-"+(mMonth+1)+"-"+mYear);
-		
+
 		imageView_motoring_vi.setVisibility(View.GONE);
 		imageView_worker_vi.setVisibility(View.GONE); 
-		
+
 		editText_worker.setText("");
 		editText_motoring_machinery.setText("");
 	}
 
-	
+
 
 	private void insertCheck() 
 	{
@@ -532,16 +654,16 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 		return null;	
 	}
 
-	private void deleteMachineAdvanceExtraById(int id)
-	{
-		int d = -1;
-		for (int i = 0; i < extraMachinesResult.size(); i++) 
-			if (extraMachinesResult.get(i).getM() != null)
-				if (extraMachinesResult.get(i).getM().getId() == id)
-					d=i;
-		if (d != -1)
-			extraMachinesResult.remove(d);
-	}
+	//	private void deleteMachineAdvanceExtraById(int id)
+	//	{
+	//		int d = -1;
+	//		for (int i = 0; i < extraMachinesResult.size(); i++) 
+	//			if (extraMachinesResult.get(i).getM() != null)
+	//				if (extraMachinesResult.get(i).getM().getId() == id)
+	//					d=i;
+	//		if (d != -1)
+	//			extraMachinesResult.remove(d);
+	//	}
 
 	class insertActivity extends AsyncTask<InsertActivityFromPost, Void, String>
 	{
@@ -654,23 +776,26 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 			if (Workers != null) {
 				BuildAdapterToWorker();
 			}
-			setProgressBarIndeterminate(View.INVISIBLE); setProgressBarIndeterminateVisibility(false);
-			isBuildWorkersFinish= true;
-			if (isBuildmotoring_machinerysFinish && isBuildScreenFinish)
-			{
-				pullToRefreshView.onRefreshComplete();
-				isInRefreshProcess = false;
-				prevSpinnersSelectionRestoreInstance();
-			}
+			setProgressBarIndeterminate(View.INVISIBLE); 
+			setProgressBarIndeterminateVisibility(false);
+			//			isBuildWorkersFinish= true;
+			//			if (isBuildmotoring_machinerysFinish && isBuildFarmFinish)
+			//			{
+			//				pullToRefreshView.onRefreshComplete();
+			//				isInRefreshProcess = false;
+			//				prevSpinnersSelectionRestoreInstance();
+			//			}
 			super.onPostExecute(result);
 		}
 
 	}
 
-	private void getUserAndBuildUrls() 
+
+
+	private void buildUrls() 
 	{
-		currentConnectedUser = (User) StoreObjects.getFromPreferences(User.class, DataGlobal.CURRENT_USER, this);
 		Log.e("eli", "Farm_id "+currentConnectedUser.getFarm_id());
+
 		UrlGetActivityTypes = host+DataGlobal.UrlGetActivityTypesRoute+"company_id="+currentConnectedUser.getCompany_id();
 		UrlGetBlocks = host+DataGlobal.UrlGetBlocksRoute+"FarmID="+currentConnectedUser.getFarm_id();
 		UrlGetCrops = host+DataGlobal.UrlGetCropsRoute+"company_id="+currentConnectedUser.getCompany_id();
@@ -682,9 +807,10 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 		@Override
 		protected void onPreExecute() 
 		{
-			setProgressBarIndeterminate(View.VISIBLE); setProgressBarIndeterminateVisibility(true); 
+			setProgressBarIndeterminate(View.VISIBLE); 
+			setProgressBarIndeterminateVisibility(true); 
 
-			getUserAndBuildUrls();
+			buildUrls();
 			buildUrlForPlotsGet(
 					currentConnectedUser.getFarm_id() + "",
 					"-1", 
@@ -699,32 +825,41 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 		{
 			ActivityGroupsArr = Crud.GET(UrlGetActivityGroups, ActivityGroups[].class, 1);
 			ActivityTypes = Crud.GET(UrlGetActivityTypes, ActivityType[].class, 1);
+
 			plots = Crud.GET(UrlGetPlots, Plot[].class, 3);
 			blocks = Crud.GET(UrlGetBlocks, Block[].class, 2);
 			Crops = Crud.GET(UrlGetCrops, Crop[].class, 1);
+
 			return null;
 		}
 
 		@Override
 		protected void onPostExecute(User result) 
 		{
+			colActivity.setArray(ActivityTypes);
+			colActivityGroup.setArray(ActivityGroupsArr);
 			BuildAdapterToActivityTypes();
-			BuildAdapterToBlocks();
-			BuildAdapterToCrops();
-			BuildAdapterToPlots();
 			BuildAdapterToActivityGroups();
+
+			colBlock.setArray(blocks);
+			colPlot.setArray(plots);
+			BuildAdapterToPlots();
+			BuildAdapterToBlocks();
+
+			BuildAdapterToCrops();
 
 			//			new PlotsFromWeb().execute();
 
-			setProgressBarIndeterminate(View.INVISIBLE); setProgressBarIndeterminateVisibility(false);
+			setProgressBarIndeterminate(View.INVISIBLE); 
+			setProgressBarIndeterminateVisibility(false);
 
-			isBuildScreenFinish = true;
-			if (isBuildWorkersFinish && isBuildmotoring_machinerysFinish) 
-			{
-				pullToRefreshView.onRefreshComplete();
-				isInRefreshProcess = false;
-				prevSpinnersSelectionRestoreInstance();
-			}
+			//			isBuildScreenFinish = true;
+			//			if (isBuildWorkersFinish && isBuildmotoring_machinerysFinish && isBuildFarmFinish) 
+			//			{
+			//				pullToRefreshView.onRefreshComplete();
+			//				isInRefreshProcess = false;
+			//				prevSpinnersSelectionRestoreInstance();
+			//			}
 			super.onPostExecute(result);
 		}
 
@@ -732,14 +867,6 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 
 	private void BuildAdapterToActivityTypes() 
 	{
-		List<String> listActivityTypesNames = new ArrayList<String>();
-		listActivityTypesNames.add(defultValueForSpinner);
-
-		if (ActivityTypes != null) {
-			for (ActivityType A : ActivityTypes)
-				listActivityTypesNames.add(A.getName());
-		}
-		UniversalFunctions.BuildAdapterRegular(this, spinner_activity_type, listActivityTypesNames);
 		spinner_activity_type.setOnItemSelectedListener(new OnItemSelectedListener()
 		{
 
@@ -748,18 +875,31 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 			{
 				if (position > 0) 
 				{
-					position--;
-					long gId = ActivityTypes[position].getActivityGroup();
-					for (int i = 0; i < ActivityGroupsArr.length; i++) 
-						if (ActivityGroupsArr[i].getID() == gId)
-							UniversalFunctions.setSelectionNoListen(spinner_ActivityGroups, i+1);
+					String selectedActivityName = spinner_activity_type.getItemAtPosition(position).toString();
+					long activityGroupId = -1;
+					if (ActivityTypes != null)
+					{
+						for (ActivityType a : ActivityTypes) 
+						{
+							String activityName = a.getName();
+							if (TextUtils.equals(activityName,	selectedActivityName)) 
+							{
+								activityGroupId = a.getActivityGroup();
+							}
+						}
+					}
+					if (ActivityGroupsArr != null)
+					{
+						//					long activityGroupId = ActivityTypes[position-1].getActivityGroup();// wrong id
+						for (int i = 0; i < ActivityGroupsArr.length; i++) 
+						{
+							if (ActivityGroupsArr[i].getID() == activityGroupId) 
+							{
+								colActivity/*from*/.setSelection(i + 1);
+							}
+						}
+					}
 				}
-
-				//				if (btn_more_motoring.getTag() != null || btn_more_worker.getTag() != null || containsExtraData(extraAddWorkers) || containsExtraData(extraAddMachines))
-				//				{
-				//					lunchDialogBeforeDeletingExtraData(prevPositionOfspinner_activity_type);
-				//				}
-				//				prevPositionOfspinner_activity_type = position;
 			}
 
 			@Override
@@ -769,83 +909,51 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 		});
 	}
 
-	//	private void lunchDialogBeforeDeletingExtraData(final int prevPosition) 
+
+	//	private boolean containsExtraData(ArrayList<View> list) 
 	//	{
-	//		AlertDialog.Builder adb = UniversalFunctions.showDialog(ActionWriteActivity.this, getString(R.string.text_change_remove_sync), getString(R.string.are_you_sore));
-	//		adb.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() 
+	//		for (View v : list) 
 	//		{
-	//			public void onClick(DialogInterface dialog, int which) 
-	//			{
-	//				
-	//			} 
-	//		});
-	//		adb.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() 
-	//		{
-	//			public void onClick(DialogInterface dialog, int which)
-	//			{
-	//				UniversalFunctions.setSelectionNoListen(spinner_activity_type, prevPosition);
-	//				prevPositionOfspinner_activity_type = prevPosition;
-	//			} 
-	//		});
-	//		adb.show();
+	//			ImageView extra = (ImageView) v.findViewById(R.id.imageView_vi);
+	//			if (extra.getVisibility() == View.VISIBLE)
+	//				return true;
+	//		}
+	//		return false;
 	//	}
 
-	private boolean containsExtraData(ArrayList<View> list) 
-	{
-		for (View v : list) 
-		{
-			ImageView extra = (ImageView) v.findViewById(R.id.imageView_vi);
-			if (extra.getVisibility() == View.VISIBLE)
-				return true;
-		}
-		return false;
-	}
-
 	private void BuildAdapterToActivityGroups() 
-	{
-		List<String> listActivityGroupsNames = new ArrayList<String>();
-		listActivityGroupsNames.add(defultValueForSpinner);
-
-		if (ActivityGroupsArr != null) {
-			for (ActivityGroups A : ActivityGroupsArr)
-				listActivityGroupsNames.add(A.getGroupName());
-		}
-		UniversalFunctions.BuildAdapterRegular(this, spinner_ActivityGroups, listActivityGroupsNames);
+	{		
 		spinner_ActivityGroups.setOnItemSelectedListener(new OnItemSelectedListener()
 		{
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view,int position, long id)
 			{
-				Thread t = new Thread(
-						new Runnable() {
-							public void run() {
-								ActivityTypes = Crud.GET(UrlGetActivityTypes,	ActivityType[].class, 1);
-							}
-						});
-				t.start();
-				try 
-				{
-					t.join();
-				}	catch (InterruptedException e)	{	}
 				if (position > 0)
 				{
-					position--;
-					long gId = ActivityGroupsArr[position].getID();
-					if (gId > -1)
+					if (ActivityGroupsArr != null)
 					{
-						ArrayList<ActivityType> ActivityTypeNew = new ArrayList<ActivityType>();
-						for (ActivityType a : ActivityTypes) 
+						long gId = ActivityGroupsArr[position - 1].getID();
+						if (gId > -1) 
 						{
-							if (a.getActivityGroup() == gId)
+							ArrayList<ActivityType> ActivityTypeNew = new ArrayList<ActivityType>();
+							if (ActivityTypes != null) 
 							{
-								ActivityTypeNew.add(a);
+								for (ActivityType a : ActivityTypes) 
+								{
+									if (a.getActivityGroup() == gId) 
+									{
+										ActivityTypeNew.add(a);
+									}
+								}
 							}
+							colActivity.setArray(ActivityTypeNew.toArray(new ActivityType[ActivityTypeNew.size()]));
 						}
-						ActivityTypes = new ActivityType[ActivityTypeNew.size()];
-						ActivityTypes = ActivityTypeNew.toArray(ActivityTypes);
 					}
 				}
-				BuildAdapterToActivityTypes();
+				else 
+				{
+					colActivity.setArray(ActivityTypes);
+				}
 			}
 			@Override
 			public void onNothingSelected(AdapterView<?> parent) 
@@ -866,17 +974,13 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 		UrlGetMachinery = host+DataGlobal.UrlGetMachineryRoute+"company_id="+currentConnectedUser.getCompany_id()+"&purchase_date="+StrDateSelect;
 	}
 
-	//	public void buildUrlToTrailing_machine()
-	//	{
-	//		UrlGetTrailing_machine = host+"api/Trailing_machine/GetTrailing_machines?company_id="+currentConnectedUser.getCompany_id()+"&purchase_date="+StrDateSelect;
-	//	}
-
 	public class Buildmotoring_machinerysFromWeb extends AsyncTask<String, Integer, User>
 	{
 		@Override
 		protected void onPreExecute() 
 		{
-			setProgressBarIndeterminate(View.VISIBLE); setProgressBarIndeterminateVisibility(true); 
+			setProgressBarIndeterminate(View.VISIBLE); 
+			setProgressBarIndeterminateVisibility(true); 
 			buildUrlToMotoring_machinery();
 			//			buildUrlToTrailing_machine();
 			super.onPreExecute();
@@ -894,29 +998,19 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 		{
 			BuildAdapterToMotoring_machinery();
 			//			BuildAdapterToTrailing_machines();
-			setProgressBarIndeterminate(View.INVISIBLE); setProgressBarIndeterminateVisibility(false);
-			isBuildmotoring_machinerysFinish= true;
-			if (isBuildWorkersFinish && isBuildScreenFinish)
-			{
-				pullToRefreshView.onRefreshComplete();
-				isInRefreshProcess = false;
-				prevSpinnersSelectionRestoreInstance();
-			}
+			setProgressBarIndeterminate(View.INVISIBLE); 
+			setProgressBarIndeterminateVisibility(false);
+			//			isBuildmotoring_machinerysFinish= true;
+			//			if (isBuildWorkersFinish  && isBuildFarmFinish)
+			//			{
+			//				pullToRefreshView.onRefreshComplete();
+			//				isInRefreshProcess = false;
+			//				prevSpinnersSelectionRestoreInstance();
+			//			}
 			super.onPostExecute(result);
 		}
 
 	}
-
-	//	private void BuildAdapterToTrailing_machines()
-	//	{
-	//		List<String> listTrailing_machine = new ArrayList<String>();
-	//		listTrailing_machine.add(defultValueForSpinner);
-	//		if (Trailing_machines != null) {
-	//			for (Trailing_machine T : Trailing_machines)
-	//				listTrailing_machine.add(T.getName());
-	//		}
-	//		BuildAdapterRegular(spinner_Trailing_machine, listTrailing_machine);		
-	//	}
 
 	private void BuildAdapterToMotoring_machinery()
 	{
@@ -955,17 +1049,16 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 		@Override
 		protected void onPreExecute() 
 		{
-			setProgressBarIndeterminate(View.VISIBLE); setProgressBarIndeterminateVisibility(true); 
+			setProgressBarIndeterminate(View.VISIBLE); 
+			setProgressBarIndeterminateVisibility(true); 
 			if (Crops!=null && Crops.length>0 && plots!=null && plots.length>0 && spinner_crop.getSelectedItemPosition()>0 && spinner_plot.getSelectedItemPosition()>0) 
 			{
-				//				Log.e("eli", Crops.length + " " +spinner_crop.getSelectedItemPosition());
-				//				Log.e("eli", plots.length + " " +spinner_plot.getSelectedItemPosition());
-
-				String one = Crops[spinner_crop.getSelectedItemPosition()-1].getId()+"";
-				String two = plots[spinner_plot.getSelectedItemPosition()-1].getId()+"";
-				buildUrlForVarietyssGet(one, two);
+				String crop = Crops[spinner_crop.getSelectedItemPosition()-1].getId()+"";
+				String plot = plots[spinner_plot.getSelectedItemPosition()-1].getId()+"";
+				buildUrlForVarietyssGet(crop, plot);
 			}
-			else {
+			else 
+			{
 				buildUrlForVarietyssGet("","");
 			}
 			super.onPreExecute();
@@ -985,54 +1078,13 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 			{
 				BuildAdapterToVarietys();
 			}
-			setProgressBarIndeterminate(View.INVISIBLE); setProgressBarIndeterminateVisibility(false);
-			super.onPostExecute(result);
-		}
-	}
-
-	public class WorkerFromWeb extends AsyncTask<String, Integer, User>
-	{
-		@Override
-		protected void onPreExecute() 
-		{
-			setProgressBarIndeterminate(View.VISIBLE); setProgressBarIndeterminateVisibility(true); 
-			if (blocks!=null && blocks.length>0 && spinner_block.getSelectedItemPosition() >0) 
-			{
-				buildUrlForPlotsGet(
-						currentConnectedUser.getFarm_id() + "",
-						blocks[spinner_block.getSelectedItemPosition()-1].getID() + ""
-						, StrDateSelect
-						, StrDateSelect);
-			}
-			else {
-				buildUrlForPlotsGet(
-						currentConnectedUser.getFarm_id() + "",
-						null, 
-						StrDateSelect, 
-						StrDateSelect);
-			}
-			super.onPreExecute();
-		}
-
-		@Override
-		protected User doInBackground(String... params) 
-		{
-			plots = Crud.GET(UrlGetPlots, Plot[].class, 3);
-			return null;
-		}
-
-		@Override
-		protected void onPostExecute(User result) 
-		{
-			if (plots!= null) 
-			{
-				BuildAdapterToPlots();
-			}
 			setProgressBarIndeterminate(View.INVISIBLE); 
 			setProgressBarIndeterminateVisibility(false);
 			super.onPostExecute(result);
 		}
 	}
+
+
 
 	private void buildUrlForPlotsGet(String farm_id, String block_id, String start_date, String end_date) 
 	{
@@ -1046,7 +1098,8 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 		@Override
 		protected void onPreExecute() 
 		{
-			setProgressBarIndeterminate(View.VISIBLE); setProgressBarIndeterminateVisibility(true); 
+			setProgressBarIndeterminate(View.VISIBLE); 
+			setProgressBarIndeterminateVisibility(true); 
 			if (blocks!=null && blocks.length>0 && spinner_block.getSelectedItemPosition()>0) 
 			{
 				buildUrlForPlotsGet(
@@ -1058,7 +1111,7 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 			else {
 				buildUrlForPlotsGet(
 						currentConnectedUser.getFarm_id() + "",
-						null, 
+						"-1", 
 						StrDateSelect, 
 						StrDateSelect);
 			}
@@ -1081,7 +1134,8 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 				//				new VarietysFromWeb().execute();
 			}
 
-			setProgressBarIndeterminate(View.INVISIBLE); setProgressBarIndeterminateVisibility(false);
+			setProgressBarIndeterminate(View.INVISIBLE); 
+			setProgressBarIndeterminateVisibility(false);
 			super.onPostExecute(result);
 		}
 	}
@@ -1131,46 +1185,54 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 
 	private void BuildAdapterToPlots()
 	{
-		List<String> listPlots = new ArrayList<String>();
-		listPlots.add(defultValueForSpinner);
-
-		if (plots != null)
-		{
-			for (Plot P : plots)
-				listPlots.add(P.getName());
-		}
-		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(ActionWriteActivity.this,R.layout.spinner_custom_textview, listPlots);
-		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		spinner_plot.setAdapter(dataAdapter);
+		//		List<String> listPlots = new ArrayList<String>();
+		//		listPlots.add(defultValueForSpinner);
+		//
+		//		if (plots != null)
+		//		{
+		//			for (Plot P : plots)
+		//				listPlots.add(P.getName());
+		//		}
+		//		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(ActionWriteActivity.this,R.layout.spinner_custom_textview, listPlots);
+		//		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		//		spinner_plot.setAdapter(dataAdapter);
 		spinner_plot.setOnItemSelectedListener(new OnItemSelectedListener() 
 		{
 			@Override
-			public void onItemSelected(AdapterView<?> arg0, View arg1,	int pos, long arg3) 
-			{			
-				if (pos > 0) {
+			public void onItemSelected(AdapterView<?> arg0, View arg1,	int position, long arg3) 
+			{
+
+				if (position > 0) 
+				{
 					new VarietysFromWeb().execute();
-					if (plots[pos-1].getBlock_id() == -1) 
+
+					String selectedPlotName = spinner_plot.getItemAtPosition(position).toString();
+					long plotBlockId = -1;
+					if (plots != null)
 					{
-						// not posible by now because:
-						// when block set to 0=בחר
-						// its agen reset the plot 
-						// but we want that plot will stay..!?
-						spinner_block.setSelection( 0 );
-						//						isSelectNotConnectedPlot = true;
-					}else {
-						for (int i = 0; i < plots.length; i++) 
+						for (Plot p : plots) 
 						{
-							for (int j = 0; j < blocks.length; j++) 
+							String plotName = p.getName();
+							if (TextUtils.equals(plotName, selectedPlotName)) 
 							{
-								if (plots[i].getBlock_id() == blocks[j].ID)
-								{
-									spinner_block.setSelection(j+1);
-									break;
-								}
+								plotBlockId = p.getBlock_id();
 							}
 						}
 					}
-				}else {
+					if (blocks != null) 
+					{
+						//					long plotBlockId = plots[position-1].getBlock_id();// wrong id
+						for (int i = 0; i < blocks.length; i++) 
+						{
+							if (blocks[i].getID() == plotBlockId) 
+							{
+								colPlot.setSelection(i + 1);
+							}
+						}
+					}
+				}
+				else 
+				{
 					Varietys = null;
 					BuildAdapterToVarietys();
 				}
@@ -1182,27 +1244,46 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 
 	private void BuildAdapterToBlocks() 
 	{
-		List<String> listBlocksNames = new ArrayList<String>();
-		listBlocksNames.add(defultValueForSpinner);
-
-		if (blocks != null) {
-			for (Block B : blocks)
-				listBlocksNames.add(B.getNameHe());
-		}
-		ArrayAdapter<String> dataBlocsAdapter = new ArrayAdapter<String>(this,R.layout.spinner_custom_textview, listBlocksNames);
-		dataBlocsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		spinner_block.setAdapter(dataBlocsAdapter);
+		//		List<String> listBlocksNames = new ArrayList<String>();
+		//		listBlocksNames.add(defultValueForSpinner);
+		//
+		//		if (blocks != null) {
+		//			for (Block B : blocks)
+		//				listBlocksNames.add(B.getNameHe());
+		//		}
+		//		ArrayAdapter<String> dataBlocsAdapter = new ArrayAdapter<String>(this,R.layout.spinner_custom_textview, listBlocksNames);
+		//		dataBlocsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		//		spinner_block.setAdapter(dataBlocsAdapter);
 		spinner_block.setOnItemSelectedListener(new OnItemSelectedListener() 
 		{
 			@Override
-			public void onItemSelected(AdapterView<?> arg0, View arg1,	int pos, long arg3) 
+			public void onItemSelected(AdapterView<?> arg0, View arg1,	int position, long arg3) 
 			{
-				if (pos > 0) 
+				if (position > 0)
 				{
-					new PlotsFromWeb().execute();
-				}else {
-					//					plots = null;
-					BuildAdapterToPlots();
+					if (blocks != null) 
+					{
+						long bId = blocks[position - 1].getID();
+						if (bId > -1) 
+						{
+							ArrayList<Plot> plotNew = new ArrayList<Plot>();
+							if (plots != null) 
+							{
+								for (Plot p : plots) 
+								{
+									if (p.getBlock_id() == bId) 
+									{
+										plotNew.add(p);
+									}
+								}
+							}
+							colPlot.setArray(plotNew.toArray(new Plot[plotNew.size()]));
+						}
+					}
+				}
+				else 
+				{
+					colPlot.setArray(plots);
 				}
 			}
 			@Override
@@ -1273,42 +1354,102 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 	@Override
 	public void onRefresh(PullToRefreshBase<ScrollView> refreshView) 
 	{
-		prevSpinnersSelectionSaveInstance();
-		isBuildScreenFinish= isBuildWorkersFinish= isBuildmotoring_machinerysFinish=false;
-		isInRefreshProcess = true;
-		new BuildScreenFromWeb().execute();
-		new BuildWorkersFromWeb().execute();
-		new Buildmotoring_machinerysFromWeb().execute();
+		new AsyncTask<Void, Void, Void>()
+		{
+			int prevCountFarms, prevCountWorkers, prevCountMachine;
+			@Override
+			protected void onPreExecute() 
+			{
+				super.onPreExecute();
+				if (farms != null) 
+				{
+					prevCountFarms = farms.length;
+				}
+				if (motoring_machinerys != null)
+				{
+					prevCountMachine = motoring_machinerys.length;
+				}
+				if (Workers != null)
+				{
+					prevCountWorkers = Workers.length;
+				}
+			}
+			@Override
+			protected Void doInBackground(Void... params) 
+			{
+				farms = Crud.GET(UrlGetFarms, Farm[].class, 1);
+				Workers = Crud.GET(UrlGetWorker, Worker[].class, 1);
+				motoring_machinerys = Crud.GET(UrlGetMachinery, motoring_machinery[].class, 1);
+				return null;
+			}
+			@Override
+			protected void onPostExecute(Void result) 
+			{
+				super.onPostExecute(result);
+				pullToRefreshView.onRefreshComplete();
+				if (farms != null && Workers!= null && motoring_machinerys!= null)
+				{
+					if (prevCountFarms < farms.length) 
+					{
+						int d = farms.length - prevCountFarms;
+						UniversalFunctions.myToast(ActionWriteActivity.this,
+								" נוספו " + d + " משקים חדשים ", Color.GREEN);
+					}
+					if (prevCountWorkers < Workers.length) 
+					{
+						int d = Workers.length - prevCountWorkers;
+						UniversalFunctions.myToast(ActionWriteActivity.this,
+								" נוספו " + d + " עובדים חדשים ", Color.GREEN);
+					}
+					if (prevCountMachine < motoring_machinerys.length)
+					{
+						int d = motoring_machinerys.length - prevCountMachine;
+						UniversalFunctions.myToast(ActionWriteActivity.this,
+								" נוספו " + d + " מיכונים חדשים ", Color.GREEN);
+					}
+				}
+			}
+		}.execute();
+		//		prevSpinnersSelectionSaveInstance();
+		//		isBuildFarmFinish= isBuildWorkersFinish= isBuildmotoring_machinerysFinish=false;
+		//		isInRefreshProcess = true;
+		//		new BuildFarmsFromWeb().execute();
+		////		new BuildScreenFromWeb().execute();
+		//		new BuildWorkersFromWeb().execute();
+		//		new Buildmotoring_machinerysFromWeb().execute();
 	}
 
+	//
+	//	private void prevSpinnersSelectionSaveInstance()
+	//	{
+	//		// TODO is not good idea to save position, because it will be modify
+	//		prev_select_spinner_farm = spinner_sector.getSelectedItemPosition();
+	//		prev_select_spinner_activity_group = spinner_ActivityGroups.getSelectedItemPosition();
+	//		prev_select_spinner_activity_type = spinner_activity_type.getSelectedItemPosition();
+	//		prev_select_spinner_block= spinner_block.getSelectedItemPosition();
+	//		prev_select_spinner_plot= spinner_plot.getSelectedItemPosition();
+	//		prev_select_spinner_crop= spinner_crop.getSelectedItemPosition();
+	//		prev_select_spinner_variety= spinner_variety.getSelectedItemPosition();
+	//		prev_select_spinner_worker= spinner_worker.getSelectedItemPosition();
+	//		prev_select_spinner_motoring_machinery= spinner_motoring_machinery.getSelectedItemPosition();
+	//		//		prev_select_spinner_Trailing_machine= spinner_Trailing_machine.getSelectedItemPosition();
+	//	}
 
-	private void prevSpinnersSelectionSaveInstance()
-	{
-		prev_select_spinner_activity_group = spinner_ActivityGroups.getSelectedItemPosition();
-		prev_select_spinner_activity_type = spinner_activity_type.getSelectedItemPosition();
-		prev_select_spinner_block= spinner_block.getSelectedItemPosition();
-		prev_select_spinner_plot= spinner_plot.getSelectedItemPosition();
-		prev_select_spinner_crop= spinner_crop.getSelectedItemPosition();
-		prev_select_spinner_variety= spinner_variety.getSelectedItemPosition();
-		prev_select_spinner_worker= spinner_worker.getSelectedItemPosition();
-		prev_select_spinner_motoring_machinery= spinner_motoring_machinery.getSelectedItemPosition();
-		//		prev_select_spinner_Trailing_machine= spinner_Trailing_machine.getSelectedItemPosition();
-	}
-
-	private void prevSpinnersSelectionRestoreInstance()
-	{
-		UniversalFunctions.setSelectionSpinner(spinner_ActivityGroups, prev_select_spinner_activity_group);
-		UniversalFunctions.setSelectionSpinner(spinner_activity_type, prev_select_spinner_activity_type);
-		UniversalFunctions.setSelectionSpinner(spinner_block, prev_select_spinner_block);
-		UniversalFunctions.setSelectionSpinner(spinner_plot, prev_select_spinner_plot);
-		UniversalFunctions.setSelectionSpinner(spinner_crop, prev_select_spinner_crop);
-		UniversalFunctions.setSelectionSpinner(spinner_variety, prev_select_spinner_variety);
-		UniversalFunctions.setSelectionSpinner(spinner_worker, prev_select_spinner_worker);
-		UniversalFunctions.setSelectionSpinner(spinner_motoring_machinery, prev_select_spinner_motoring_machinery);
-		//		setSelectionSpinner(spinner_Trailing_machine, prev_select_spinner_Trailing_machine);
-		restoreExtraOnRefresh(extraAddWorkers, spinner_worker);
-		restoreExtraOnRefresh(extraAddMachines, spinner_motoring_machinery);
-	}
+	//	private void prevSpinnersSelectionRestoreInstance()
+	//	{
+	//		UniversalFunctions.setSelectionSpinner(spinner_sector, prev_select_spinner_farm);
+	//		UniversalFunctions.setSelectionSpinner(spinner_ActivityGroups, prev_select_spinner_activity_group);
+	//		UniversalFunctions.setSelectionSpinner(spinner_activity_type, prev_select_spinner_activity_type);
+	//		UniversalFunctions.setSelectionSpinner(spinner_block, prev_select_spinner_block);
+	//		UniversalFunctions.setSelectionSpinner(spinner_plot, prev_select_spinner_plot);
+	//		UniversalFunctions.setSelectionSpinner(spinner_crop, prev_select_spinner_crop);
+	//		UniversalFunctions.setSelectionSpinner(spinner_variety, prev_select_spinner_variety);
+	//		UniversalFunctions.setSelectionSpinner(spinner_worker, prev_select_spinner_worker);
+	//		UniversalFunctions.setSelectionSpinner(spinner_motoring_machinery, prev_select_spinner_motoring_machinery);
+	//		//		setSelectionSpinner(spinner_Trailing_machine, prev_select_spinner_Trailing_machine);
+	//		restoreExtraOnRefresh(extraAddWorkers, spinner_worker);
+	//		restoreExtraOnRefresh(extraAddMachines, spinner_motoring_machinery);
+	//	}
 
 
 	private void restoreExtraOnRefresh(ArrayList<View> views, Spinner sp) 
@@ -1533,7 +1674,7 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 				public void onClick(View removeBtn) 
 				{
 					removeBtn.setEnabled(false);
-//					UniversalFunctions.startAnimForRemove(row, wraper_adding_worker);
+					//					UniversalFunctions.startAnimForRemove(row, wraper_adding_worker);
 					extraAddWorkers.remove(row);
 					imageView_vi.setVisibility(View.GONE);
 					btn_more.setTag(null);
@@ -1575,7 +1716,7 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 				public void onClick(View removeBtn) 
 				{
 					removeBtn.setEnabled(false);
-//					UniversalFunctions.startAnimForRemove(row, wraper_adding_machinery);
+					//					UniversalFunctions.startAnimForRemove(row, wraper_adding_machinery);
 					extraAddMachines.remove(row);
 					imageView_vi.setVisibility(View.GONE);
 					btn_more.setTag(null);
@@ -1654,6 +1795,7 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 			spinnerThatLunchFrom = s;
 			editTextThatLunchFrom = e;
 			imgViewViThatLunchFrom = img;
+			buttonNoreThatLunchFrom = (Button)v;
 			startMachineAdvanced((Button)v, s, e);
 		}
 	}
@@ -1677,6 +1819,7 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 			spinnerThatLunchFrom = s;
 			editTextThatLunchFrom = e;
 			imgViewViThatLunchFrom = img;
+			buttonNoreThatLunchFrom = (Button)v;
 			startWorkerAdvanced((Button)v, s, e);
 		}
 	}
@@ -1797,7 +1940,7 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 		editTextThatLunchFrom.setText(machineRes.getTotalTime()+"");
 		isFromUser = true;
 		getSupportFragmentManager().popBackStack();
-		UniversalFunctions.showPopAp(this, editTextThatLunchFrom);
+		UniversalFunctions.showPopAp(this, buttonNoreThatLunchFrom);
 
 	}
 
@@ -1813,7 +1956,7 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 		editTextThatLunchFrom.setText(workerRes.getTotalTime()+"");
 		isFromUser = true;
 		getSupportFragmentManager().popBackStack();
-		UniversalFunctions.showPopAp(this, editTextThatLunchFrom);
+		UniversalFunctions.showPopAp(this, buttonNoreThatLunchFrom);
 
 	}
 

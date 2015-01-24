@@ -2,7 +2,7 @@ package model;
 
 import java.math.BigDecimal;
 
-public class ActivityType 
+public class ActivityType  extends BaseSpinnerModel  
 {
 	private int id ;
 	private String name ;
@@ -41,9 +41,8 @@ public class ActivityType
 	}
 	@Override
 	public String toString() {
-		return "ActivityType [id=" + id + ", name=" + name + ", ActivityGroup="
-				+ ActivityGroup + ", ActualPrice=" + ActualPrice
-				+ ", YieldDescription=" + YieldDescription + "]";
+		return name;
+
 	}
 	public ActivityType(int id, String name, long activityGroup,
 			BigDecimal actualPrice, int yieldDescription) {
@@ -53,6 +52,16 @@ public class ActivityType
 		ActivityGroup = activityGroup;
 		ActualPrice = actualPrice;
 		YieldDescription = yieldDescription;
+	}
+	@Override
+	public long getIdBase() {
+		// TODO Auto-generated method stub
+		return id;
+	}
+	@Override
+	public String getSpinnerName() {
+		// TODO Auto-generated method stub
+		return name;
 	}
 	
 	

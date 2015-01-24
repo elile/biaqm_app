@@ -3,7 +3,7 @@ package utils;
 
 public class DataGlobal 
 {
-	public static final String host = "http://10.0.3.2:1560/";
+	public static final String host = "http://10.0.3.2/";
 	//	private String host = "http://10.0.3.2/"; /* http://10.0.3.2/ on geny | http://10.0.2.2/ on emulator*/
 	//	private String host = "http://192.168.1.100/"; /* http://10.0.3.2/ on geny | http://10.0.2.2/ on emulator*/
 	
@@ -18,6 +18,8 @@ public class DataGlobal
 	public static final String UrlGetMachineryRoute = "api/motoring_machinery/Getmotoring_machinerys?";
 	public static final String UrlGetYield_DescriptionsRoute =  "api/Yield_Descriptions/GetYield_Descriptions?";
 	public static final String UrlPostInsertActivityWithRoute =  "api/InsertActivityFromPost/InsertActivity";
+	public static final String UrlGetFarms =  "/api/Farm/GetFarms?company_id=%s";
+
 
 	//	private String UrlGetTrailing_machine = host+"api/Trailing_machine/GetTrailing_machines?company_id=";
 
@@ -39,6 +41,15 @@ public class DataGlobal
 	public static final String WORKER_HOURS = "WORKER_HOURS";
 	public static final String MACHINE_ADVANCED = "MACHINE_ADVANCED";
 	public static final String MACHINE_HOURS = "MACHINE_HOURS";
+	
+	
+	public static final String SPINNER_ACTIVITY_NAME = "SPINNER_ACTIVITY";
+	public static final String SPINNER_ACTIVITY_GROUP_NAME = "SPINNER_ACTIVITY_GROUP";
+	public static final String SPINNER_BLOCK_NAME = "SPINNER_BLOCK";
+	public static final String SPINNER_PLOT_NAME = "SPINNER_PLOT";
+	public static final String SPINNER_CROP_NAME = "SPINNER_ACTIVITY";
+	public static final String SPINNER_VERIETY_NAME = "SPINNER_ACTIVITY";
+	public static final String SPINNER_FARM_NAME = "SPINNER_FARM";
 
 
 }

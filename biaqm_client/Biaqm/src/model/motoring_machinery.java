@@ -2,7 +2,7 @@ package model;
 
 import java.io.Serializable;
 
-public class motoring_machinery implements Serializable
+public class motoring_machinery  extends BaseSpinnerModel   implements Serializable
 {
 	private int id ;
 	private String name ;
@@ -11,8 +11,8 @@ public class motoring_machinery implements Serializable
 	@Override
 	public String toString() 
 	{
-		return "motoring_machinery [id=" + id + ", name=" + name
-				+ ", hour_price=" + hour_price + "]";
+		return name;
+
 	}
 	public motoring_machinery(int id, String name, double hour_price) 
 	{
@@ -38,6 +38,16 @@ public class motoring_machinery implements Serializable
 	}
 	public void setHour_price(double hour_price) {
 		this.hour_price = hour_price;
+	}
+	@Override
+	public long getIdBase() {
+		// TODO Auto-generated method stub
+		return id;
+	}
+	@Override
+	public String getSpinnerName() {
+		// TODO Auto-generated method stub
+		return name;
 	} 
     
     

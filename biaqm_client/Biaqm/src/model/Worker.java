@@ -2,7 +2,7 @@ package model;
 
 import java.io.Serializable;
 
-public class Worker  implements Serializable 
+public class Worker  extends BaseSpinnerModel   implements Serializable 
 {
 	private int id ;
 	private String name ;
@@ -39,19 +39,13 @@ public class Worker  implements Serializable
 	
 	@Override
 	public String toString() {
-		return "Worker [id=" + id + ", name=" + name + ", PaymentTypeID="
-				+ PaymentTypeID + ", hour_cost=" + hour_cost
-				+ ", standard_hours=" + standard_hours + ", first_overtime="
-				+ first_overtime + ", second_overtime=" + second_overtime
-				+ ", first_overtime_hours=" + first_overtime_hours
-				+ ", worker_type_id=" + worker_type_id + ", farm_id=" + farm_id
-				+ ", company_id=" + company_id + ", payment_type="
-				+ payment_type + "]";
+		return name;
 	}
 	
 	public int getId() {
 		return id;
 	}
+	
 	public void setId(int id) {
 		this.id = id;
 	}
@@ -120,6 +114,20 @@ public class Worker  implements Serializable
 	}
 	public void setPayment_type(String payment_type) {
 		this.payment_type = payment_type;
+	}
+
+	@Override
+	public long getIdBase() 
+	{
+		// TODO Auto-generated method stub
+		return id;
+		
+	}
+
+	@Override
+	public String getSpinnerName() {
+		// TODO Auto-generated method stub
+		return name;
 	}
 
 

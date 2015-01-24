@@ -1,6 +1,6 @@
 package model;
 
-public class ActivityGroups
+public class ActivityGroups  extends BaseSpinnerModel  
 {
 	private long ID ;
 	private String GroupName ;
@@ -14,7 +14,7 @@ public class ActivityGroups
 	@Override
 	public String toString() 
 	{
-		return "ActivityGroups [ID=" + ID + ", GroupName=" + GroupName	+ "]";
+		return GroupName;
 	}
 	
 	public long getID()
@@ -35,6 +35,18 @@ public class ActivityGroups
 	public void setGroupName(String groupName) 
 	{
 		GroupName = groupName;
+	}
+
+	@Override
+	public long getIdBase() {
+		// TODO Auto-generated method stub
+		return ID;
+	}
+
+	@Override
+	public String getSpinnerName() {
+		// TODO Auto-generated method stub
+		return GroupName;
 	}
 	
 

@@ -1,6 +1,8 @@
 package utils;
 
 import java.util.List;
+
+import model.BaseSpinnerModel;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
@@ -13,6 +15,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.v4.app.FragmentActivity;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -32,6 +35,7 @@ import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.example.biaqm.R;
 
 public class UniversalFunctions 
@@ -208,7 +212,7 @@ public class UniversalFunctions
 		}
 	}
 
-	public static void showPopAp(Context c, View v)
+	public static void showPopAp(Context c, final View v)
 	{
 		if (StoreObjects.getFromPreferences(Boolean.class, "showTutorial", c) == null) 
 		{
@@ -216,7 +220,6 @@ public class UniversalFunctions
 			LayoutInflater layoutInflater = (LayoutInflater) c.getSystemService(c.LAYOUT_INFLATER_SERVICE);
 			View popupView = layoutInflater.inflate(R.layout.popup_window, null);
 			final PopupWindow popupWindow = new PopupWindow(popupView,	LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-			ImageView imageView_close = (ImageView) popupView.findViewById(R.id.imageView_close);
 
 			popupWindow.setOutsideTouchable(true);
 			popupWindow.setTouchable(true);
@@ -229,23 +232,59 @@ public class UniversalFunctions
 					return false; 
 				} 
 			}); 
-
-			imageView_close.setOnClickListener(new Button.OnClickListener() 
+			v.postDelayed(new Runnable() 
 			{
 				@Override
-				public void onClick(View v) 
+				public void run()
 				{
-					popupWindow.dismiss();
+					popupWindow.showAsDropDown(v);
 				}
-			});
-			popupWindow.showAsDropDown(v, -180, -100);
+			}, 1000);
 			popupView.postDelayed(new Runnable() 
 			{
 				public void run()
 				{
 					popupWindow.dismiss();
 				}
-			}, 7000);
+			}, 10000);
+		}
+	}
+	
+	public static long getIdFromSpinner(Spinner s, int selectionInSpinner, BaseSpinnerModel[] spinnerArray)
+	{
+		if (selectionInSpinner == 0)
+		{
+			return -1;
+		}
+		String selectedName = s.getItemAtPosition(selectionInSpinner).toString();
+		for (BaseSpinnerModel bsm : spinnerArray) 
+		{
+			if (TextUtils.equals(selectedName, bsm.getSpinnerName()))
+			{
+				return bsm.getIdBase();
+			}
+		}
+		return -1;
+	}
+	
+	public static void setSpinnerSelectionOnId(Spinner s, long id, BaseSpinnerModel[] spinnerArray)
+	{
+		for (BaseSpinnerModel bsm : spinnerArray)
+		{
+			if (id == bsm.getIdBase())
+			{
+				int k = s.getAdapter().getCount();
+				for (int i = 0; i < k; i++) 
+				{
+					String selectedName = s.getItemAtPosition(i).toString();
+					if (TextUtils.equals(selectedName, bsm.getSpinnerName())) 
+					{
+						UniversalFunctions.setSelectionSpinner(s, i);
+						break;
+					}
+
+				}
+			}
 		}
 	}
 	

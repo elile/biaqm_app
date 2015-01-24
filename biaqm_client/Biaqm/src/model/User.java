@@ -2,7 +2,7 @@ package model;
 
 import java.util.Date;
 
-public class User 
+public class User  
 {
 	private long id ;
 	private String first_name ;
@@ -19,7 +19,7 @@ public class User
 	private String syte_lang ;
 	private int company_id ;
 	private int role ;
-	private int farm_id ;
+	private long farm_id ;
 	private short enabled;
 	private String User_RegDateTime ;
 
@@ -199,10 +199,10 @@ public class User
 	public void setRole(int role) {
 		this.role = role;
 	}
-	public int getFarm_id() {
+	public long getFarm_id() {
 		return farm_id;
 	}
-	public void setFarm_id(int farm_id) {
+	public void setFarm_id(long farm_id) {
 		this.farm_id = farm_id;
 	}
 	public short getEnabled() {

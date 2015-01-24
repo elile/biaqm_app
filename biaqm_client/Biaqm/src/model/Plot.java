@@ -2,7 +2,7 @@ package model;
 
 import java.util.Date;
 
-public class Plot {
+public class Plot  extends BaseSpinnerModel  {
 	private int id ;
 	private String name ;
 	private long farm_id ;
@@ -55,9 +55,8 @@ public class Plot {
 	}
 	@Override
 	public String toString() {
-		return "Plot [id=" + id + ", name=" + name + ", farm_id=" + farm_id
-				+ ", region_id=" + region_id + ", block_id=" + block_id
-				+ ", start_date=" + start_date + ", end_date=" + end_date + "]";
+		return name;
+
 	}
 	public Plot(int id, String name, long farm_id, int region_id, int block_id,
 			Date start_date, Date end_date) {
@@ -69,6 +68,16 @@ public class Plot {
 		this.block_id = block_id;
 		this.start_date = start_date;
 		this.end_date = end_date;
+	}
+	@Override
+	public long getIdBase() {
+		// TODO Auto-generated method stub
+		return id;
+	}
+	@Override
+	public String getSpinnerName() {
+		// TODO Auto-generated method stub
+		return name;
 	}
     
     

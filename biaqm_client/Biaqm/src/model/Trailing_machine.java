@@ -1,6 +1,6 @@
 package model;
 
-public class Trailing_machine {
+public class Trailing_machine  extends BaseSpinnerModel  {
 	
 	public int id ;
     public String name ;
@@ -9,8 +9,7 @@ public class Trailing_machine {
 	@Override
 	public String toString() 
 	{
-		return "motoring_machinery [id=" + id + ", name=" + name
-				+ ", hour_price=" + hour_price + "]";
+		return name;
 	}
 	public Trailing_machine(int id, String name, double hour_price) 
 	{
@@ -36,6 +35,16 @@ public class Trailing_machine {
 	}
 	public void setHour_price(double hour_price) {
 		this.hour_price = hour_price;
+	}
+	@Override
+	public long getIdBase() {
+		// TODO Auto-generated method stub
+		return id;
+	}
+	@Override
+	public String getSpinnerName() {
+		// TODO Auto-generated method stub
+		return name;
 	} 
     
     

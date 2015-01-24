@@ -1,6 +1,6 @@
 package model;
 
-public class Crop 
+public class Crop  extends BaseSpinnerModel  
 {
 	private int id;
 	private String name;
@@ -14,7 +14,7 @@ public class Crop
 	}
 	@Override
 	public String toString() {
-		return "Crop [id=" + id + ", name=" + name + "]";
+		return name;
 	}
 	public int getId() {
 		return id;
@@ -27,6 +27,16 @@ public class Crop
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	@Override
+	public long getIdBase() {
+		// TODO Auto-generated method stub
+		return id;
+	}
+	@Override
+	public String getSpinnerName() {
+		// TODO Auto-generated method stub
+		return name;
 	}
 
 }

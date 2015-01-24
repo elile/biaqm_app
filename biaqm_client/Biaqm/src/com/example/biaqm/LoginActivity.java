@@ -83,20 +83,22 @@ public class LoginActivity extends Activity
 					else 
 					{
 						textViewWrongPasswordOrUserName.setVisibility(View.VISIBLE);
+						progressBarIndeterminate.setVisibility(View.INVISIBLE);
+
 					}
 
 				} catch (Exception e) { progressBarIndeterminate.setVisibility(View.INVISIBLE);}
 			}
 		});
 	}
-	
+
 	@Override
 	protected void onResume()
 	{
 		progressBarIndeterminate.setVisibility(View.INVISIBLE);
 		super.onStart();
 	}
-	
+
 	private void initStaff() 
 	{
 		editTextUserName = (EditText) findViewById(R.id.editTextUserName);
@@ -195,26 +197,21 @@ public class LoginActivity extends Activity
 			if (st != null && st.isSuccesseded())
 			{
 				DataGlobal.TokenValue = st.getToken();
-				if (st.isSuccesseded()) 
+				try 
 				{
-					DataGlobal.TokenValue = st.getToken();
-					try 
-					{
-						new checkIfUserExistAndGetHim().execute();
-					} 
-					catch (Exception e) 
-					{
-						progressBarIndeterminate.setVisibility(View.INVISIBLE);
-					} 
+					new checkIfUserExistAndGetHim().execute();
+				} 
+				catch (Exception e) 
+				{
+				} 
 
-				}
 			}
 			else 
 			{
 				textViewWrongPasswordOrUserName.setVisibility(View.VISIBLE);
-				progressBarIndeterminate.setVisibility(View.INVISIBLE);
-
 			}
+			progressBarIndeterminate.setVisibility(View.INVISIBLE);
+			Log.e("eli", DataGlobal.TokenName + "  " +DataGlobal.TokenValue);
 			super.onPostExecute(st);
 		}
 	}
@@ -245,11 +242,10 @@ public class LoginActivity extends Activity
 		protected void onPostExecute(User result) 
 		{
 			//			progressBarIndeterminate.setVisibility(View.INVISIBLE);
+			progressBarIndeterminate.setVisibility(View.INVISIBLE);
 			if (result==null) 
 			{
 				textViewWrongPasswordOrUserName.setVisibility(View.VISIBLE);
-				progressBarIndeterminate.setVisibility(View.INVISIBLE);
-
 			}
 			else 
 			{
