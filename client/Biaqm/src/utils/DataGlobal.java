@@ -19,6 +19,12 @@ public class DataGlobal
 	public static final String UrlGetYield_DescriptionsRoute =  "api/Yield_Descriptions/GetYield_Descriptions?";
 	public static final String UrlPostInsertActivityWithRoute =  "api/InsertActivityFromPost/InsertActivity";
 	public static final String UrlGetFarms =  "/api/Farm/GetFarms?company_id=%s";
+	public static final String UrlGetCropByBlock = "api/Crop/GetCropByBlock?block_id=%s&FromDate=%s&ToDate=%s";
+	public static final String UrlGetVarietysByBlock = "api/Variety/GetVarietysByBlock?block_id=%s&FromDate=%s&ToDate=%s";
+	public static final String GetBlocksByCrop = "api/Blocks/GetBlocksByCrop?crop_id=%s&FromDate=%s&ToDate=%s";
+	public static final String GetBlocksByVariety = "api/Blocks/GetBlocksByVariety?variety_id=%s&FromDate=%s&ToDate=%s";
+	public static final String GetPlotsByVariety = "api/Plots/GetPlotsByVariety?variety_id=%s&start_date=%s&end_date=%s";
+
 
 
 	//	private String UrlGetTrailing_machine = host+"api/Trailing_machine/GetTrailing_machines?company_id=";

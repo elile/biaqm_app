@@ -14,7 +14,7 @@ public abstract class Colleague
 	}
 	
 	public abstract void setArray(BaseSpinnerModel[] array);
-	public abstract void setSelection(int selection);
+	public abstract void setSelection(int selection, String FromDate, String ToDate);
 	public abstract void keepThisId(long id);
 	public abstract String getNameColleague();
 	
@@ -27,6 +27,7 @@ public abstract class Colleague
 
 	public abstract Context getContext() ;
 
+	public abstract void setFull(String who) ;
 
 	
 

@@ -4,6 +4,10 @@ import model.BaseSpinnerModel;
 import model.EmptySpinnerValue;
 import utils.UniversalFunctions;
 import android.content.Context;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
@@ -52,9 +56,9 @@ public class ColegaSpinner extends Colleague
 	}
 
 	@Override
-	public void setSelection(int selection) 
+	public void setSelection(int selection, String FromDate, String ToDate) 
 	{
-		mediator.setSelection(selection, this);
+		mediator.setSelection(selection, this, FromDate, ToDate);
 		//		UniversalFunctions.setSelectionSpinner(spinner, selection);
 
 	}
@@ -127,6 +131,39 @@ public class ColegaSpinner extends Colleague
 	public Object[] getArrayFull() 
 	{
 		return arrayFull;
+	}
+
+
+
+	@Override
+	public void setFull(String who) 
+	{
+		Log.e("eli", "setFull " + who);
+		OnItemSelectedListener onIsel = spinner.getOnItemSelectedListener();
+		spinner.setOnItemSelectedListener(null);
+		BaseSpinnerModel[] fullBase= new BaseSpinnerModel [arrayFull.length+1];
+		fullBase[0] = new EmptySpinnerValue(context);
+		for (int i = 0; i < arrayFull.length; i++) 
+		{
+			fullBase[i+1] = (BaseSpinnerModel)arrayFull[i];
+		}
+		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(context, R.layout.spinner_custom_textview, convertArryToList(fullBase));
+		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		spinner.setAdapter(dataAdapter);
+		setArrayLoading(fullBase);
+//		UniversalFunctions.setSelectionNoListen(spinner, 0);
+		spinner.setOnItemSelectedListener(onIsel);
+
+	}
+	
+	private String[] convertArryToList(BaseSpinnerModel[] array) 
+	{
+		String[] strArr = new String[array.length];
+		for (int i = 0; i < array.length; i++)
+		{
+			strArr[i] = array[i].getSpinnerName();
+		}
+		return strArr;
 	}
 
 

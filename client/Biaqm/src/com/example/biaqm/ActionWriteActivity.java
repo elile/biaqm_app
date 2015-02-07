@@ -66,6 +66,7 @@ import android.widget.RelativeLayout.LayoutParams;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewAnimator;
 
 import com.gc.materialdesign.views.ButtonFlat;
@@ -108,9 +109,12 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 	private String UrlGetActivityGroups;
 	private String UrlGetFarms;
 
-	private Spinner spinner_activity_type, spinner_block, spinner_plot, 
-	spinner_crop, spinner_variety, spinner_worker, 
+	private Spinner spinner_activity_type, spinner_block, 
+	spinner_plot, spinner_crop, spinner_variety, spinner_worker, 	
 	spinner_motoring_machinery, spinner_ActivityGroups, spinner_farm;
+	private boolean isFirstOn_spinner_activity_type, 
+	isFirstOn_spinner_block,isFirstOn_spinner_plot,
+	isFirstOn_spinner_crop,isFirstOn_spinner_variety,isFirstOn_spinner_ActivityGroups,isFirstOn_spinner_farm;
 
 	private ButtonFlat buttonDateChange, buttonClear, button_ok /*buttonTimeChange, button_main_menu*/;
 
@@ -164,15 +168,14 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 	private SlidingLayer mSlidingLayer;
 	private ImageButton close_open_menu;
 	private MediatorImplement mediator;
+	private LinearLayout wraper_sector;
 	private ColegaSpinner colActivity;
 	private ColegaSpinner colActivityGroup;
-	private LinearLayout wraper_sector;
 	private ColegaSpinner colBlock;
 	private ColegaSpinner colPlot;
 	private ColegaSpinner colFarm;
 	private ColegaSpinner colCrop;
 	private ColegaSpinner colVariety;
-
 
 
 
@@ -241,8 +244,8 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 			setProgressBarIndeterminate(View.INVISIBLE); 
 			setProgressBarIndeterminateVisibility(false);
 
-			colFarm.setArray(farms);
 			buildAdapterToFarms();
+			colFarm.setArray(farms);
 			if (farms.length == 1)
 			{
 				spinner_farm.setSelection(1);
@@ -308,7 +311,7 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 
 	private void initMediator() 
 	{
-		mediator = new MediatorImplement();
+		mediator = new MediatorImplement(this);
 
 		colActivity = new ColegaSpinner(mediator, DataGlobal.SPINNER_ACTIVITY_NAME, spinner_activity_type,this);
 		colActivityGroup = new ColegaSpinner(mediator, DataGlobal.SPINNER_ACTIVITY_GROUP_NAME, spinner_ActivityGroups, this);	
@@ -524,14 +527,14 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 
 	private void clearSpinnersAndExtra() 
 	{
-		UniversalFunctions.setSelectionSpinner(spinner_ActivityGroups, 0);
-		UniversalFunctions.setSelectionSpinner(spinner_activity_type, 0);
-		UniversalFunctions.setSelectionSpinner(spinner_block, 0);
-		UniversalFunctions.setSelectionSpinner(spinner_plot, 0);
-		UniversalFunctions.setSelectionSpinner(spinner_crop, 0);
-		UniversalFunctions.setSelectionSpinner(spinner_variety, 0);
-		UniversalFunctions.setSelectionSpinner(spinner_worker, 0);
-		UniversalFunctions.setSelectionSpinner(spinner_motoring_machinery, 0);
+		UniversalFunctions.setSelectionNoListen(spinner_ActivityGroups, 0);
+		UniversalFunctions.setSelectionNoListen(spinner_activity_type, 0);
+		UniversalFunctions.setSelectionNoListen(spinner_block, 0);
+		UniversalFunctions.setSelectionNoListen(spinner_plot, 0);
+		UniversalFunctions.setSelectionNoListen(spinner_crop, 0);
+		UniversalFunctions.setSelectionNoListen(spinner_variety, 0);
+		UniversalFunctions.setSelectionNoListen(spinner_worker, 0);
+		UniversalFunctions.setSelectionNoListen(spinner_motoring_machinery, 0);
 
 		extraAddWorkers.clear();
 		extraAddMachines.clear();
@@ -699,8 +702,7 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 			{
 				String ret = "0";
 
-				ret = Crud.POST_For_Response_String(host + DataGlobal.UrlPostInsertActivityWithRoute + "?inWrite=" + inWrite,
-						params[0],	InsertActivityFromPost.class);
+				ret = Crud.POST_For_Response_String(host + DataGlobal.UrlPostInsertActivityWithRoute + "?inWrite=" + inWrite,	params[0],	InsertActivityFromPost.class);
 				return ret;
 			} 
 			catch (Exception e)
@@ -865,18 +867,16 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 		{
 			colActivity.setArray(activityTypes);
 			colActivityGroup.setArray(activityGroups);
-			BuildAdapterToActivityTypes();
-			BuildAdapterToActivityGroups();
-
 			colBlock.setArray(blocks);
 			colPlot.setArray(plots);
+			colCrop.setArray(crops);
+			colVariety.setArray(varietys);
+
+			BuildAdapterToActivityTypes();
+			BuildAdapterToActivityGroups();
 			BuildAdapterToPlots();
 			BuildAdapterToBlocks();
-
-			colCrop.setArray(crops);
 			BuildAdapterToCrops();
-
-			colVariety.setArray(varietys);
 			BuildAdapterToVarietys();
 
 			//			new PlotsFromWeb().execute();
@@ -904,7 +904,21 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
 			{
-				colActivity.setSelection(position);
+				if (isFirstOn_spinner_activity_type) 
+				{
+					if (position > 0)
+					{
+						colActivity.setSelection(position, StrDateSelect,	StrDateSelect);
+					} 
+					else 
+					{
+
+					}
+				}
+				else
+				{
+					isFirstOn_spinner_activity_type = true;
+				}
 			}
 
 			@Override
@@ -933,7 +947,21 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view,int position, long id)
 			{
-				colActivityGroup.setSelection(position);
+				if (isFirstOn_spinner_ActivityGroups) 
+				{
+					if (position > 0) 
+					{
+						colActivityGroup.setSelection(position, StrDateSelect,	StrDateSelect);
+					} 
+					else 
+					{
+						colActivity.setFull("activity");
+					}
+				}
+				else
+				{
+					isFirstOn_spinner_ActivityGroups = true;
+				}
 			}
 			@Override
 			public void onNothingSelected(AdapterView<?> parent) 
@@ -1136,13 +1164,26 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) 
 			{
-				if (position > 0)
+				if (isFirstOn_spinner_variety) 
 				{
-					colVariety.setSelection(position);
+					if (position > 0) 
+					{
+						colVariety.setSelection(position, StrDateSelect,	StrDateSelect);
+					} 
+					else 
+					{
+						new BuildScreenFromWeb().execute();
+//						isFirstOn_spinner_crop=isFirstOn_spinner_variety=isFirstOn_spinner_plot=isFirstOn_spinner_block = false;
+//						colBlock.setFull("spinner_variety Block");
+//						colPlot.setFull("spinner_variety Plot");
+//						colCrop.setFull("spinner_variety crop");
+//						colVariety.setFull("spinner_variety variety");
+
+					}
 				}
 				else
 				{
-					
+					isFirstOn_spinner_variety = true;
 				}
 			}
 			@Override
@@ -1169,19 +1210,36 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 			@Override
 			public void onItemSelected(AdapterView<?> arg0, View arg1,	int position, long arg3) 
 			{
-				if (position > 0)
+				if (isFirstOn_spinner_crop) 
 				{
-					colCrop.setSelection(position);
-					//				if (pos > 0) 
-					//				{
-					//					new VarietysFromWeb().execute();
-					//					//				Log.e("eli", ActivityTypes[pos].toString());
-					//				}
-					//				else 
-					//				{
-					//					Varietys = null;
-					//					BuildAdapterToVarietys();
-					//				}
+					if (position > 0)
+					{
+						colCrop.setSelection(position, StrDateSelect,	StrDateSelect);
+						//				if (pos > 0) 
+						//				{
+						//					new VarietysFromWeb().execute();
+						//					//				Log.e("eli", ActivityTypes[pos].toString());
+						//				}
+						//				else 
+						//				{
+						//					Varietys = null;
+						//					BuildAdapterToVarietys();
+						//				}
+					}
+					else
+					{
+//						new BuildScreenFromWeb().execute();
+//						isFirstOn_spinner_crop=isFirstOn_spinner_variety=isFirstOn_spinner_plot=isFirstOn_spinner_block = false;
+//						colBlock.setFull("spinner_crop Block");
+//						colPlot.setFull("spinner_crop Plot");
+//						colCrop.setFull("spinner_crop crop");
+//						colVariety.setFull("spinner_crop variety");
+
+					}
+				}
+				else
+				{
+					isFirstOn_spinner_crop = true;
 				}
 			}
 			@Override
@@ -1207,9 +1265,26 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 			@Override
 			public void onItemSelected(AdapterView<?> arg0, View arg1,	int position, long arg3) 
 			{
-				if (position > 0 )
+				if (isFirstOn_spinner_plot) 
 				{
-					colPlot.setSelection(position);
+					if (position > 0) 
+					{
+						colPlot.setSelection(position, StrDateSelect,StrDateSelect);
+					} 
+					else
+					{
+//						new BuildScreenFromWeb().execute();
+//						isFirstOn_spinner_crop=isFirstOn_spinner_variety=isFirstOn_spinner_plot=isFirstOn_spinner_block = false;
+//						colBlock.setFull("spinner_plot Block");
+//						colPlot.setFull("spinner_plot Plot");
+//						colCrop.setFull("spinner_plot crop");
+//						colVariety.setFull("spinner_plot variety");
+
+					}
+				}
+				else
+				{
+					isFirstOn_spinner_plot = true;
 				}
 			}
 			@Override
@@ -1234,13 +1309,25 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 			@Override
 			public void onItemSelected(AdapterView<?> arg0, View arg1,	int position, long arg3) 
 			{
-				if (position > 0) 
+				if (isFirstOn_spinner_block) 
 				{
-					colBlock.setSelection(position);
+					if (position > 0) 
+					{
+						colBlock.setSelection(position, StrDateSelect,	StrDateSelect);
+					} 
+					else 
+					{
+//						new BuildScreenFromWeb().execute();
+//						isFirstOn_spinner_crop=isFirstOn_spinner_variety=isFirstOn_spinner_plot=isFirstOn_spinner_block = false;
+//						colBlock.setFull("spinner_block Block");
+//						colPlot.setFull("spinner_block Plot");
+//						colCrop.setFull("spinner_block crop");
+//						colVariety.setFull("spinner_block variety");
+					}
 				}
-				else 
+				else
 				{
-					colPlot.setArray(plots);
+					isFirstOn_spinner_block = true;
 				}
 			}
 			@Override
@@ -1335,8 +1422,11 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 			protected Void doInBackground(Void... params) 
 			{
 				farms = Crud.GET(UrlGetFarms, Farm[].class, 1);// TODO need to refresh the screen get
-				workers = Crud.GET(UrlGetWorker, Worker[].class, 1);
-				motoring_machinerys = Crud.GET(UrlGetMachinery, motoring_machinery[].class, 1);
+				if (!TextUtils.isEmpty(UrlGetWorker) && !TextUtils.isEmpty(UrlGetMachinery)) 
+				{
+					workers = Crud.GET(UrlGetWorker, Worker[].class, 1);
+					motoring_machinerys = Crud.GET(UrlGetMachinery,	motoring_machinery[].class, 1);
+				}
 				return null;
 			}
 			@Override

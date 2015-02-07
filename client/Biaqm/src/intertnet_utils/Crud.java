@@ -16,6 +16,7 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 
 import utils.DataGlobal;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -26,7 +27,10 @@ public class Crud
 	// example to call: User u = (User)Crud.GET("http://...", User.Class)
 	public static <T> T GET(String url, Class<T> responseType, int typeOfDateAndTime) 
 	{
-		//		Log.e("eli", url);
+		if (TextUtils.isEmpty(url))
+		{
+			return null;
+		}
 		Gson gson;
 		switch (typeOfDateAndTime) 
 		{

@@ -67,7 +67,7 @@ public class UniversalFunctions
 		to.setAdapter(from.getAdapter());
 	}
 
-	public static void setSelectionSpinner(Spinner s, int pos) 
+	private static void setSelectionSpinner(Spinner s, int pos) 
 	{
 		if (pos > 0 && 	pos < s.getAdapter().getCount()) 
 		{
