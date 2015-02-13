@@ -138,21 +138,27 @@ public class ColegaSpinner extends Colleague
 	@Override
 	public void setFull(String who) 
 	{
-		Log.e("eli", "setFull " + who);
-		OnItemSelectedListener onIsel = spinner.getOnItemSelectedListener();
-		spinner.setOnItemSelectedListener(null);
-		BaseSpinnerModel[] fullBase= new BaseSpinnerModel [arrayFull.length+1];
-		fullBase[0] = new EmptySpinnerValue(context);
-		for (int i = 0; i < arrayFull.length; i++) 
+		if (arrayFull != null)
 		{
-			fullBase[i+1] = (BaseSpinnerModel)arrayFull[i];
+			Log.e("eli", "setFull " + who);
+			OnItemSelectedListener onIsel = spinner.getOnItemSelectedListener();
+			spinner.setOnItemSelectedListener(null);
+			spinner.setAdapter(null);
+			BaseSpinnerModel[] fullBase = new BaseSpinnerModel[arrayFull.length + 1];
+			fullBase[0] = new EmptySpinnerValue(context);
+			for (int i = 0; i < arrayFull.length; i++) {
+				fullBase[i + 1] = (BaseSpinnerModel) arrayFull[i];
+			}
+			ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(
+					context, R.layout.spinner_custom_textview,
+					convertArryToList(fullBase));
+			dataAdapter
+					.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			spinner.setAdapter(dataAdapter);
+			setArrayLoading(fullBase);
+			//		UniversalFunctions.setSelectionNoListen(spinner, 0);
+			spinner.setOnItemSelectedListener(onIsel);
 		}
-		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(context, R.layout.spinner_custom_textview, convertArryToList(fullBase));
-		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		spinner.setAdapter(dataAdapter);
-		setArrayLoading(fullBase);
-//		UniversalFunctions.setSelectionNoListen(spinner, 0);
-		spinner.setOnItemSelectedListener(onIsel);
 
 	}
 	

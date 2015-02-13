@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Web;
 using System.Web.Http;
 
 namespace Biaqm.Controllers
@@ -13,7 +14,7 @@ namespace Biaqm.Controllers
     {
         public List<Trailing_machine> GetTrailing_machines(String company_id, String purchase_date)
         {
-            return Trailing_machineDal.getTrailing_machine(company_id, purchase_date);
+            return Trailing_machineDal.getTrailing_machine(company_id, HttpContext.Current.Server.UrlDecode(purchase_date));
         }
     }
 }

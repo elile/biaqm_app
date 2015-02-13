@@ -40,5 +40,33 @@ namespace Biaqm.Dal
             }
             return Crops;
         }
+
+        internal static List<Crop> getCropByBlock(String block_id, String FromDate, String ToDate)
+        {
+            string query = string.Format("SELECT DISTINCT C.[id], C.[name] FROM  [crop] AS C INNER JOIN [variety] AS V ON V.[crop_id] = C.[id] INNER JOIN [variety_to_plot] AS VP ON VP.[variety_id] = V.[id] INNER JOIN [plot] AS P ON P.[id] = VP.[plot_id] INNER JOIN [Block] AS B ON B.[ID] = P.[block_id] WHERE B.[ID] = '{0}' AND VP.[StartDate] <= '{1}' AND (VP.[EndDate] IS NULL OR VP.[EndDate] >=  '{2}')", block_id, FromDate, ToDate);
+            List<Crop> Crops = new List<Crop>();
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                con.Open();
+                using (SqlCommand command = new SqlCommand(query, con))
+                {
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.HasRows)
+                        {
+                            while (reader.Read())
+                            {
+                                Crops.Add(new Crop()
+                                {
+                                    id = Convert.ToInt32(reader[0]),
+                                    name = Convert.ToString(reader[1])
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+            return Crops;
+        }
     }
 }

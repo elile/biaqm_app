@@ -24,7 +24,7 @@ namespace Biaqm.Dal
             Int64 rowAffected4 = 0;
             Int64 rowAffected6 = 0;
             string area = "-1";
-            String ToDate = "CONVERT(varchar, '" + insertActivityFromPost.date + "', 103)";
+            String ToDate = "CONVERT(varchar, '" + HttpContext.Current.Server.UrlDecode(insertActivityFromPost.date) + "', 103)";
             String FromDate = ToDate;
 
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -87,7 +87,7 @@ namespace Biaqm.Dal
 
                     // Execute 3
                     area = CalculateArea(
-                        insertActivityFromPost.date,
+                        HttpContext.Current.Server.UrlDecode( insertActivityFromPost.date),
                         insertActivityFromPost.BlockID,
                         insertActivityFromPost.PlotID,
                         insertActivityFromPost.CropID,
@@ -396,7 +396,7 @@ namespace Biaqm.Dal
             double totalTime = Convert.ToDouble(totalTimeStr);
             string WorkerID = w.id.ToString();
             if (WorkerID == "-1") return "-1";
-            string FromDate = activityToInsert.date;
+            string FromDate = HttpContext.Current.Server.UrlDecode( activityToInsert.date);
             string query = string.Empty;
             SqlDataReader reader = null;
             string WorkersQuantity = "1";

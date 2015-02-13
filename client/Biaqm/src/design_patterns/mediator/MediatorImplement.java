@@ -20,6 +20,7 @@ import utils.UniversalFunctions;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.AdapterView.OnItemSelectedListener;
 
@@ -73,7 +74,7 @@ public class MediatorImplement implements Mediator
 					String currentName = from.getSpinner().getItemAtPosition(i).toString();
 					if (TextUtils.equals(currentName, prevName))
 					{
-							UniversalFunctions.setSelectionNoListen(from.getSpinner(), i);
+						UniversalFunctions.setSelectionNoListen(from.getSpinner(), i);
 					}
 				}
 			}
@@ -109,7 +110,7 @@ public class MediatorImplement implements Mediator
 		}
 		return strArr;
 	}
-	
+
 	private User getCurrentConnectedUser() 
 	{
 		User currentConnectedUser = (User) StoreObjects.getFromPreferences(User.class, DataGlobal.CURRENT_USER, c);
@@ -152,8 +153,8 @@ public class MediatorImplement implements Mediator
 						{
 							try 
 							{
-								new AsyncTask<Void, Void, Block[]>()
-								{
+								Block[] b = new AsyncTask<Void, Void, Block[]>()
+										{
 									@Override
 									protected Block[] doInBackground(Void... params) 
 									{
@@ -167,7 +168,8 @@ public class MediatorImplement implements Mediator
 									{
 										to.setArray(blocks);
 									}
-								}.execute().get();
+										}.execute().get();
+										Log.e("eli", "b" + b);
 							}
 							catch (InterruptedException e) 
 							{
@@ -181,7 +183,7 @@ public class MediatorImplement implements Mediator
 						break;
 					case DataGlobal.SPINNER_CROP_NAME:
 						// select the crop of the variety
-//						Crop[] crops = Arrays.copyOf(to.getArrayFull(), to.getArrayFull().length, Crop[].class);
+						//						Crop[] crops = Arrays.copyOf(to.getArrayFull(), to.getArrayFull().length, Crop[].class);
 						BaseSpinnerModel[] crops = to.getArrayLoading();//FIX
 						if (crops != null)
 						{
@@ -200,8 +202,8 @@ public class MediatorImplement implements Mediator
 						final long varietySelectedId3 = varietySelectedId;
 						try 
 						{
-							new AsyncTask<Void, Void, Plot[]>()
-							{
+							Plot[]p=new AsyncTask<Void, Void, Plot[]>()
+									{
 								@Override
 								protected Plot[] doInBackground(Void... params) 
 								{
@@ -215,7 +217,8 @@ public class MediatorImplement implements Mediator
 								{
 									to.setArray(blocks);
 								}
-							}.execute().get();
+									}.execute().get();
+									Log.e("eli", "p" + p);
 						}
 						catch (InterruptedException e) 
 						{
@@ -259,8 +262,8 @@ public class MediatorImplement implements Mediator
 						{
 							try 
 							{
-								new AsyncTask<Void, Void, Crop[]>()
-								{
+								Crop[]c=new AsyncTask<Void, Void, Crop[]>()
+										{
 									@Override
 									protected Crop[] doInBackground(Void... params) 
 									{
@@ -275,7 +278,8 @@ public class MediatorImplement implements Mediator
 										to.setArray(crops);
 
 									}
-								}.execute().get();
+										}.execute().get();
+										Log.e("eli", "c" + c);
 							}
 							catch (InterruptedException e) 
 							{
@@ -295,8 +299,8 @@ public class MediatorImplement implements Mediator
 						{
 							try 
 							{
-								new AsyncTask<Void, Void, Variety[]>()
-								{
+								Variety[]  v = new AsyncTask<Void, Void, Variety[]>()
+										{
 									@Override
 									protected Variety[] doInBackground(Void... params) 
 									{
@@ -310,7 +314,8 @@ public class MediatorImplement implements Mediator
 									{
 										to.setArray(crops);
 									}
-								}.execute().get();
+										}.execute().get();
+										Log.e("eli", "v" + v);
 							}
 							catch (InterruptedException e) 
 							{
@@ -376,8 +381,8 @@ public class MediatorImplement implements Mediator
 						{
 							try 
 							{
-								new AsyncTask<Void, Void, Block[]>()
-								{
+								Block[] b = new AsyncTask<Void, Void, Block[]>()
+										{
 									@Override
 									protected Block[] doInBackground(Void... params) 
 									{
@@ -391,7 +396,8 @@ public class MediatorImplement implements Mediator
 									{
 										to.setArray(blocks);
 									}
-								}.execute().get();
+										}.execute().get();
+										Log.e("eli", "b" + b);
 							}
 							catch (InterruptedException e) 
 							{
@@ -478,8 +484,8 @@ public class MediatorImplement implements Mediator
 						{
 							try 
 							{
-								new AsyncTask<Void, Void, Variety[]>()
-								{
+								Variety[] v = new AsyncTask<Void, Void, Variety[]>()
+										{
 									@Override
 									protected Variety[] doInBackground(Void... params) 
 									{
@@ -488,14 +494,15 @@ public class MediatorImplement implements Mediator
 										Variety[] varietys = Crud.GET(UrlGetVarietys,	Variety[].class, 1);
 										return varietys;
 									}
-									
+
 									@Override
 									protected void onPostExecute(Variety[] crops)
 									{
 										to.setArray(crops);
 
 									}
-								}.execute().get();
+										}.execute().get();
+										Log.e("eli", "v" + v);
 							}
 							catch (InterruptedException e) 
 							{

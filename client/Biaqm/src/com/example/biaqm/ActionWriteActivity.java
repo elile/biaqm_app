@@ -271,34 +271,38 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) 
 			{
-				clearSpinnersAndExtra();
-
-				if (position > 0)
+				if (isFirstOn_spinner_farm) 
 				{
-					Farm f = farms[position-1];
-					currentConnectedUser.setFarm_id(f.getId());
-					StoreObjects.putInSharedPreferences(currentConnectedUser, DataGlobal.CURRENT_USER, ActionWriteActivity.this);
+					clearSpinnersAndExtra();
+					if (position > 0) 
+					{
+						Farm f = farms[position - 1];
+						currentConnectedUser.setFarm_id(f.getId());
+						StoreObjects.putInSharedPreferences(
+								currentConnectedUser, DataGlobal.CURRENT_USER,
+								ActionWriteActivity.this);
 
-					new BuildScreenFromWeb().execute(); //ActivityGroups , ActivityTypes, plots, blocks, Crops
-					new BuildWorkersFromWeb().execute();
-					new Buildmotoring_machinerysFromWeb().execute();
-				}
-				else
-				{
-					// toast farm cant be null
+						new BuildScreenFromWeb().execute(); //ActivityGroups , ActivityTypes, plots, blocks, Crops
+						new BuildWorkersFromWeb().execute();
+						new Buildmotoring_machinerysFromWeb().execute();
+					} else {
+						// toast farm cant be null
 
-					// NOT WORK
-					//					String[] dataDumyList = {""};
-					//					ArrayAdapter<String> dummyAdapter = new ArrayAdapter<String>(ActionWriteActivity.this,R.layout.spinner_custom_textview, dataDumyList);
-					//					dummyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-					//					spinner_ActivityGroups.setAdapter(dummyAdapter);
-					//					spinner_activity_type.setAdapter(dummyAdapter);
-					//					spinner_block.setAdapter(dummyAdapter);
-					//					spinner_plot.setAdapter(dummyAdapter);
-					//					spinner_crop.setAdapter(dummyAdapter);
-					//					spinner_variety.setAdapter(dummyAdapter);
-					//					spinner_worker.setAdapter(dummyAdapter);
-					//					spinner_motoring_machinery.setAdapter(dummyAdapter);
+						// NOT WORK
+						//					String[] dataDumyList = {""};
+						//					ArrayAdapter<String> dummyAdapter = new ArrayAdapter<String>(ActionWriteActivity.this,R.layout.spinner_custom_textview, dataDumyList);
+						//					dummyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+						//					spinner_ActivityGroups.setAdapter(dummyAdapter);
+						//					spinner_activity_type.setAdapter(dummyAdapter);
+						//					spinner_block.setAdapter(dummyAdapter);
+						//					spinner_plot.setAdapter(dummyAdapter);
+						//					spinner_crop.setAdapter(dummyAdapter);
+						//					spinner_variety.setAdapter(dummyAdapter);
+						//					spinner_worker.setAdapter(dummyAdapter);
+						//					spinner_motoring_machinery.setAdapter(dummyAdapter);
+					}
+				}else {
+					isFirstOn_spinner_farm = true;
 				}
 
 			}
@@ -558,6 +562,12 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 
 		editText_worker.setText("");
 		editText_motoring_machinery.setText("");
+
+		colBlock.setFull("");
+		colPlot.setFull("");
+		colCrop.setFull("");
+		colVariety.setFull("");
+		colActivity.setFull("");
 	}
 
 
@@ -912,7 +922,7 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 					} 
 					else 
 					{
-
+						UniversalFunctions.setSelectionNoListen(spinner_ActivityGroups, 0);
 					}
 				}
 				else
@@ -1172,12 +1182,12 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 					} 
 					else 
 					{
-						new BuildScreenFromWeb().execute();
-//						isFirstOn_spinner_crop=isFirstOn_spinner_variety=isFirstOn_spinner_plot=isFirstOn_spinner_block = false;
-//						colBlock.setFull("spinner_variety Block");
-//						colPlot.setFull("spinner_variety Plot");
-//						colCrop.setFull("spinner_variety crop");
-//						colVariety.setFull("spinner_variety variety");
+						//						new BuildScreenFromWeb().execute();
+						//						isFirstOn_spinner_crop=isFirstOn_spinner_variety=isFirstOn_spinner_plot=isFirstOn_spinner_block = false;
+						//						colBlock.setFull("spinner_variety Block");
+						//						colPlot.setFull("spinner_variety Plot");
+						//						colCrop.setFull("spinner_variety crop");
+						//						colVariety.setFull("spinner_variety variety");
 
 					}
 				}
@@ -1228,12 +1238,12 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 					}
 					else
 					{
-//						new BuildScreenFromWeb().execute();
-//						isFirstOn_spinner_crop=isFirstOn_spinner_variety=isFirstOn_spinner_plot=isFirstOn_spinner_block = false;
-//						colBlock.setFull("spinner_crop Block");
-//						colPlot.setFull("spinner_crop Plot");
-//						colCrop.setFull("spinner_crop crop");
-//						colVariety.setFull("spinner_crop variety");
+						//						new BuildScreenFromWeb().execute();
+						//						isFirstOn_spinner_crop=isFirstOn_spinner_variety=isFirstOn_spinner_plot=isFirstOn_spinner_block = false;
+						//						colBlock.setFull("spinner_crop Block");
+						//						colPlot.setFull("spinner_crop Plot");
+						//						colCrop.setFull("spinner_crop crop");
+						//						colVariety.setFull("spinner_crop variety");
 
 					}
 				}
@@ -1273,13 +1283,12 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 					} 
 					else
 					{
-//						new BuildScreenFromWeb().execute();
-//						isFirstOn_spinner_crop=isFirstOn_spinner_variety=isFirstOn_spinner_plot=isFirstOn_spinner_block = false;
-//						colBlock.setFull("spinner_plot Block");
-//						colPlot.setFull("spinner_plot Plot");
-//						colCrop.setFull("spinner_plot crop");
-//						colVariety.setFull("spinner_plot variety");
-
+						//						new BuildScreenFromWeb().execute();
+						//						isFirstOn_spinner_crop=isFirstOn_spinner_variety=isFirstOn_spinner_plot=isFirstOn_spinner_block = false;
+						//						colBlock.setFull("spinner_plot Block");
+						//						colPlot.setFull("spinner_plot Plot");
+						//						colCrop.setFull("spinner_plot crop");
+						//						colVariety.setFull("spinner_plot variety");
 					}
 				}
 				else
@@ -1317,12 +1326,15 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 					} 
 					else 
 					{
-//						new BuildScreenFromWeb().execute();
-//						isFirstOn_spinner_crop=isFirstOn_spinner_variety=isFirstOn_spinner_plot=isFirstOn_spinner_block = false;
-//						colBlock.setFull("spinner_block Block");
-//						colPlot.setFull("spinner_block Plot");
-//						colCrop.setFull("spinner_block crop");
-//						colVariety.setFull("spinner_block variety");
+						//						new BuildScreenFromWeb().execute();
+						//						isFirstOn_spinner_crop=isFirstOn_spinner_variety=isFirstOn_spinner_plot=isFirstOn_spinner_block = false;
+						//						colBlock.setFull("spinner_block Block");
+						//						colPlot.setFull("spinner_block Plot");
+						//						colCrop.setFull("spinner_block crop");
+						//						colVariety.setFull("spinner_block variety");
+						colPlot.setArray(plots);//ok
+						colCrop.setArray(crops);//ok
+						colVariety.setArray(varietys);//ok
 					}
 				}
 				else
@@ -1349,6 +1361,9 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 			buttonDateChange.setText(getString(R.string.change_date)+"\n"+mDay+"-"+(mMonth+1)+"-"+mYear);
 			setLastKnowTimeAndDate();
 			new PlotsFromWeb().execute();
+			BuildAdapterToBlocks();
+			BuildAdapterToCrops();
+			BuildAdapterToVarietys();
 			new BuildWorkersFromWeb().execute();
 			new Buildmotoring_machinerysFromWeb().execute();
 			// need to check if the time change dont crash the advanced data
@@ -1360,10 +1375,12 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 		try 
 		{
 			StrDateSelect = URLEncoder.encode(mYear+"-"+(mMonth+1)+"-"+mDay+" "+mHour+":"+mMinute+":00.000", "utf-8");
-		} 
-		catch (UnsupportedEncodingException e)
+		}
+		catch (UnsupportedEncodingException e) 
 		{
-		};
+			e.printStackTrace();
+		}
+		//		StrDateSelect =  mYear+"-"+(mMonth+1)+"-"+mDay+" "+mHour+":"+mMinute+":00.000";
 	}
 
 	//	private TimePickerDialog.OnTimeSetListener mTimeSetListener =  new TimePickerDialog.OnTimeSetListener() 
@@ -1398,65 +1415,66 @@ implements OnClickListener, OnRefreshListener<ScrollView>
 	@Override
 	public void onRefresh(PullToRefreshBase<ScrollView> refreshView) 
 	{
-		new AsyncTask<Void, Void, Void>()
-		{
-			int prevCountFarms, prevCountWorkers, prevCountMachine;
-			@Override
-			protected void onPreExecute() 
-			{
-				super.onPreExecute();
-				if (farms != null) 
-				{
-					prevCountFarms = farms.length;
-				}
-				if (motoring_machinerys != null)
-				{
-					prevCountMachine = motoring_machinerys.length;
-				}
-				if (workers != null)
-				{
-					prevCountWorkers = workers.length;
-				}
-			}
-			@Override
-			protected Void doInBackground(Void... params) 
-			{
-				farms = Crud.GET(UrlGetFarms, Farm[].class, 1);// TODO need to refresh the screen get
-				if (!TextUtils.isEmpty(UrlGetWorker) && !TextUtils.isEmpty(UrlGetMachinery)) 
-				{
-					workers = Crud.GET(UrlGetWorker, Worker[].class, 1);
-					motoring_machinerys = Crud.GET(UrlGetMachinery,	motoring_machinery[].class, 1);
-				}
-				return null;
-			}
-			@Override
-			protected void onPostExecute(Void result) 
-			{
-				super.onPostExecute(result);
-				pullToRefreshView.onRefreshComplete();
-				if (farms != null && workers!= null && motoring_machinerys!= null)
-				{
-					if (prevCountFarms < farms.length) 
-					{
-						int d = farms.length - prevCountFarms;
-						UniversalFunctions.myToast(ActionWriteActivity.this,
-								" נוספו " + d + " משקים חדשים ", Color.GREEN);
-					}
-					if (prevCountWorkers < workers.length) 
-					{
-						int d = workers.length - prevCountWorkers;
-						UniversalFunctions.myToast(ActionWriteActivity.this,
-								" נוספו " + d + " עובדים חדשים ", Color.GREEN);
-					}
-					if (prevCountMachine < motoring_machinerys.length)
-					{
-						int d = motoring_machinerys.length - prevCountMachine;
-						UniversalFunctions.myToast(ActionWriteActivity.this,
-								" נוספו " + d + " מיכונים חדשים ", Color.GREEN);
-					}
-				}
-			}
-		}.execute();
+		pullToRefreshView.onRefreshComplete();
+		//		new AsyncTask<Void, Void, Void>()
+		//		{
+		//			int prevCountFarms, prevCountWorkers, prevCountMachine;
+		//			@Override
+		//			protected void onPreExecute() 
+		//			{
+		//				super.onPreExecute();
+		//				if (farms != null) 
+		//				{
+		//					prevCountFarms = farms.length;
+		//				}
+		//				if (motoring_machinerys != null)
+		//				{
+		//					prevCountMachine = motoring_machinerys.length;
+		//				}
+		//				if (workers != null)
+		//				{
+		//					prevCountWorkers = workers.length;
+		//				}
+		//			}
+		//			@Override
+		//			protected Void doInBackground(Void... params) 
+		//			{
+		//				farms = Crud.GET(UrlGetFarms, Farm[].class, 1);// TODO need to refresh the screen get
+		//				if (!TextUtils.isEmpty(UrlGetWorker) && !TextUtils.isEmpty(UrlGetMachinery)) 
+		//				{
+		//					workers = Crud.GET(UrlGetWorker, Worker[].class, 1);
+		//					motoring_machinerys = Crud.GET(UrlGetMachinery,	motoring_machinery[].class, 1);
+		//				}
+		//				return null;
+		//			}
+		//			@Override
+		//			protected void onPostExecute(Void result) 
+		//			{
+		//				super.onPostExecute(result);
+		//				pullToRefreshView.onRefreshComplete();
+		//				if (farms != null && workers!= null && motoring_machinerys!= null)
+		//				{
+		//					if (prevCountFarms < farms.length) 
+		//					{
+		//						int d = farms.length - prevCountFarms;
+		//						UniversalFunctions.myToast(ActionWriteActivity.this,
+		//								" נוספו " + d + " משקים חדשים ", Color.GREEN);
+		//					}
+		//					if (prevCountWorkers < workers.length) 
+		//					{
+		//						int d = workers.length - prevCountWorkers;
+		//						UniversalFunctions.myToast(ActionWriteActivity.this,
+		//								" נוספו " + d + " עובדים חדשים ", Color.GREEN);
+		//					}
+		//					if (prevCountMachine < motoring_machinerys.length)
+		//					{
+		//						int d = motoring_machinerys.length - prevCountMachine;
+		//						UniversalFunctions.myToast(ActionWriteActivity.this,
+		//								" נוספו " + d + " מיכונים חדשים ", Color.GREEN);
+		//					}
+		//				}
+		//			}
+		//		}.execute();
 		//		prevSpinnersSelectionSaveInstance();
 		//		isBuildFarmFinish= isBuildWorkersFinish= isBuildmotoring_machinerysFinish=false;
 		//		isInRefreshProcess = true;

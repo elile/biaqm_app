@@ -49,13 +49,13 @@ public class DataGlobal
 	public static final String MACHINE_HOURS = "MACHINE_HOURS";
 	
 	
-	public static final String SPINNER_ACTIVITY_NAME = "SPINNER_ACTIVITY";
-	public static final String SPINNER_ACTIVITY_GROUP_NAME = "SPINNER_ACTIVITY_GROUP";
-	public static final String SPINNER_BLOCK_NAME = "SPINNER_BLOCK";
-	public static final String SPINNER_PLOT_NAME = "SPINNER_PLOT";
-	public static final String SPINNER_CROP_NAME = "SPINNER_CROP";
-	public static final String SPINNER_VERIETY_NAME = "SPINNER_VERIETY";
-	public static final String SPINNER_FARM_NAME = "SPINNER_FARM";
+	public static final String SPINNER_ACTIVITY_NAME = "SPINNER_ACTIVITY_NAME";
+	public static final String SPINNER_ACTIVITY_GROUP_NAME = "SPINNER_ACTIVITY_GROUP_NAME";
+	public static final String SPINNER_BLOCK_NAME = "SPINNER_BLOCK_NAME";
+	public static final String SPINNER_PLOT_NAME = "SPINNER_PLOT_NAME";
+	public static final String SPINNER_CROP_NAME = "SPINNER_CROP_NAME";
+	public static final String SPINNER_VERIETY_NAME = "SPINNER_VERIETY_NAME";
+	public static final String SPINNER_FARM_NAME = "SPINNER_FARM_NAME";
 
 
 }
